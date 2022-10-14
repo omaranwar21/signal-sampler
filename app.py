@@ -1,4 +1,5 @@
 from audioop import add
+from os import remove
 from signal import signal
 import streamlit as st
 import matplotlib.pyplot as plt
@@ -9,15 +10,27 @@ st.set_page_config(
     layout="wide"
 )
 
-simulated_signal=[]
+def add_simulated_signal():
+    if st.session_state.signal_name =="":
+        st.session_state.signal_name="Signal_"+str(len(st.session_state.simulated_signal)+1)
+    st.session_state.simulated_signal[st.session_state.signal_name]={
+        "freq_value":st.session_state.freq_value,
+        "freq_scale":st.session_state.add_signal_freq_scale,
+        "mag_value":st.session_state.mag_value
+    }
+def remove_simulated_signal():
+    pass
+    
+
+if "simulated_signal" not in st.session_state:
+    st.session_state.simulated_signal= {}
 st.title("Signal Sampler")
 
 with st.expander("ℹ️ - About this app", expanded=True):
 
     st.write(
         """     
--   The *BERT Keyword Extractor* app is an easy-to-use interface built in Streamlit for the amazing [KeyBERT](https://github.com/MaartenGr/KeyBERT) library from Maarten Grootendorst!
--   It uses a minimal keyword extraction technique that leverages multiple NLP embeddings and relies on [Transformers] (https://huggingface.co/transformers/) 🤗 to create keywords/keyphrases that are most similar to a document.
+-   The *Signal Sampler* app is an easy-to-use interface built in Streamlit for sampling singals and simulate it
 	    """
     )
 
@@ -43,25 +56,41 @@ with c1:
     if noise_checkbox:
         noise=st.slider("SNR",key="noise_slider")
 
+    with st.expander("More Options"):
+        st.write("")
+
 with c4: 
     choose_signal= st.radio("Choose Signal",options=("Uploading Signal","Simulating"),horizontal=True)
     if choose_signal=="Simulating":
         
         add_signal=st.button("Add Signal")
         if add_signal:
-            with st.form("Signal Info"):
-                siganl_name= st.text_input("Enter Signal Name")
-                signal_freq= st.slider("Choose Signal freqency",key="freq_value")
+            with st.form("add_signal_form"):
+                signal_name= st.text_input("Enter Signal Name", key="signal_name")
+                sampling_rate_scale= st.selectbox("Scale of freq.",("10Hz","100Hz","1KHz","10KHz","100KHz"),key="add_signal_freq_scale")
+                maxV, step, format= samplingRate(sampling_rate_scale)
+                signal_freq = st.slider(
+                        "Choose Signal freqency",
+                        min_value=0.0,
+                        max_value=maxV,
+                        step=step,
+                        format=format,
+                        key="freq_value"
+                    )
                 signal_mag= st.slider("Choose Signal magnitude",key="mag_value")
-                def add_data():
-                    data= [siganl_name, signal_freq,signal_mag]
-                    simulated_signal.append(data)
-                    print(simulated_signal)
-                add_button=st.form_submit_button(on_click=lambda: add_data())
+                add_button=st.form_submit_button("Add Signal",on_click=add_simulated_signal)
+
+
+        if st.session_state.simulated_signal:
+            remove_box= st.selectbox("choose a signal", st.session_state.simulated_signal.keys())
+            remove_button=st.button("remove")
+            if remove_button:
+                del st.session_state.simulated_signal[remove_box]
+    selected_graphs= st.selectbox("Select type of graph",("Signal with Samples","Samples Only","Signal Only","Reconstructed Signal"))        
+        
                 
-                    
-        if(simulated_signal):
-            st.select_slider("Select a Signal", simulated_signal)          
+
+
 
 with c2:
     
