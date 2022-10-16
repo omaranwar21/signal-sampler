@@ -1,12 +1,22 @@
 import streamlit as st
-from utils import samplingRate, signal_sum, sampled_signal, add_noise
+from utils import read_wav, sampled_signal_maxf, samplingRate, signal_sum, sampled_signal, add_noise
 import numpy as np
 import plotly.graph_objects as go
+from scipy.io import wavfile
 st.set_option('deprecation.showPyplotGlobalUse', False)
 st.set_page_config(
     page_title="Signal Sampler",
     layout="wide"
 )
+
+
+if 'time' not in st.session_state:
+    st.session_state.time =np.linspace(0,5,2000)
+if 'uploaded_signal' not in st.session_state:
+    st.session_state.uploaded_signal = np.zeros(st.session_state.time.shape)
+if 'maxf' not in st.session_state:
+    st.session_state.maxf = 1
+
 
 def add_simulated_signal():
     if st.session_state.signal_name =="":
@@ -33,11 +43,19 @@ with st.expander("ℹ️ - About this app", expanded=True):
 
 c1,_ = st.columns([2,5])
 with c1:
-    file=st.file_uploader(label="Upload Signal File")
-
+    file=st.file_uploader(label="Upload Signal File", key="uploaded_file")
+    if file:
+        signal, time, maxF=read_wav(file)
+        st.session_state.uploaded_signal=signal
+        st.session_state.time= time
+        st.session_state.maxf= maxF
+    
 ce, c1, ce, c2, ce, c4,ce = st.columns([0.07, 1, 0.07, 3.5, 0.07,1,0.07])
 with c1:
-    sampling_rate_scale= st.selectbox("Scale of freq.",("10Hz","100Hz","1KHz","10KHz","100KHz","F(max)Hz"),key="sampling_rate_scale")
+    sampling_options=("10Hz","100Hz","1KHz","10KHz","100KHz")
+    if st.session_state.uploaded_file:
+        sampling_options=("10Hz","100Hz","1KHz","10KHz","100KHz","F(max)Hz")
+    sampling_rate_scale= st.selectbox("Scale of freq.",sampling_options,key="sampling_rate_scale")
     maxV, minV,step, format= samplingRate(sampling_rate_scale)
     sampling_rate = st.slider(
             "sampling rate",
@@ -55,9 +73,9 @@ with c1:
         st.write("")
 
 with c4: 
-    choose_signal= st.radio("Choose Signal",options=("Uploading Signal","Simulating"),horizontal=True)
+    choose_signal= st.radio("Choose Signal",options=("Uploaded Signal","Simulating"),horizontal=True, key="choose_signal")
     if choose_signal=="Simulating":
-        
+        signal_period= st.slider("Signal Period",min_value=0.1,max_value=10.0,step=0.1,value=1.0,format="%fsec",key="signal_period")
         add_signal=st.button("Add Signal")
         if add_signal:
             with st.form("add_signal_form"):
@@ -107,8 +125,15 @@ with c2:
         sample_flag=True
         reconstruction_flag=True
 
-    time= np.linspace(0, 3, 1500)
-    full_signals=signal_sum(st.session_state.simulated_signal,time)
+    time=np.linspace(0,5,2000)
+    full_signals=np.zeros(time.shape)
+    if st.session_state.choose_signal =="Uploaded Signal":
+        full_signals, time= st.session_state.uploaded_signal, st.session_state.time
+    
+    else:
+        time= np.linspace(0, st.session_state.signal_period, int(st.session_state.signal_period*500))
+    
+        full_signals=signal_sum(st.session_state.simulated_signal,time)
 
     if st.session_state.noise_checkbox:
         full_signals=add_noise(full_signals,st.session_state.noise_slider)
@@ -118,7 +143,10 @@ with c2:
                     mode='lines',
                     name='lines'))
     if sample_flag:
-        sampled_x, sampled_time=sampled_signal(full_signals,time, st.session_state.sampling_rate, st.session_state.sampling_rate_scale)
+        if st.session_state.sampling_rate_scale=="F(max)Hz":
+            sampled_x, sampled_time=sampled_signal_maxf(full_signals,time, st.session_state.sampling_rate, st.session_state.maxf)
+        else:
+            sampled_x, sampled_time=sampled_signal(full_signals,time, st.session_state.sampling_rate, st.session_state.sampling_rate_scale)
         fig.add_trace(go.Scatter(x=sampled_time, y=sampled_x,
                     mode='markers',
                     name='markers'))
