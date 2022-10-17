@@ -1,5 +1,5 @@
 import streamlit as st
-from utils import read_wav, sampled_signal_maxf, samplingRate, signal_sum, sampled_signal, add_noise
+from utils import read_wav, reconstructor, sampled_signal_maxf, samplingRate, signal_sum, sampled_signal, add_noise
 import numpy as np
 import plotly.graph_objects as go
 from scipy.io import wavfile
@@ -121,7 +121,7 @@ with c2:
         sample_flag=False
         reconstruction_flag=False
     elif(st.session_state.graph_type=="Reconstructed Signal"):
-        signal_flag=False
+        signal_flag=True
         sample_flag=True
         reconstruction_flag=True
 
@@ -138,6 +138,7 @@ with c2:
     if st.session_state.noise_checkbox:
         full_signals=add_noise(full_signals,st.session_state.noise_slider)
     fig = go.Figure()
+    fig2=go.Figure()
     if signal_flag:
         fig.add_trace(go.Scatter(x=time, y=full_signals,
                     mode='lines',
@@ -150,6 +151,20 @@ with c2:
         fig.add_trace(go.Scatter(x=sampled_time, y=sampled_x,
                     mode='markers',
                     name='markers'))
+    if reconstruction_flag:
+        if st.session_state.sampling_rate_scale=="F(max)Hz":
+            sampled_x, sampled_time=sampled_signal_maxf(full_signals,time, st.session_state.sampling_rate, st.session_state.maxf)
+        else:
+            sampled_x, sampled_time=sampled_signal(full_signals,time, st.session_state.sampling_rate, st.session_state.sampling_rate_scale)
+        if len(sampled_time) != 1:
+            recon_signal=reconstructor(time, sampled_time,sampled_x)
+            fig2.add_trace(go.Scatter(x=time, y=recon_signal,
+                    mode='lines',
+                    name='lines'))
+            fig2.update_xaxes(showgrid=False)
+            fig2.update_yaxes(showgrid=False)
     fig.update_xaxes(showgrid=False)
     fig.update_yaxes(showgrid=False)
     st.plotly_chart(fig,use_container_width=True)
+    if reconstruction_flag:
+        st.plotly_chart(fig2,use_container_width=True)

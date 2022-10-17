@@ -82,3 +82,13 @@ def read_wav(file):
         time=np.linspace(0,5,2000)
         full_signals=np.zeros(time.shape)
         return full_signals, time, 1
+
+
+def reconstructor(recon_signal_points, sampled_time, sampled_signal):
+    
+    u = np.resize(recon_signal_points, (len(sampled_time), len(recon_signal_points)))
+    print(u[0])
+    v = (sampled_time - u.T) / (sampled_time[1] - sampled_time[0])
+    m = sampled_signal * np.sinc(v)
+    recon_signal = np.sum(m, axis = 1)
+    return recon_signal
