@@ -12,6 +12,7 @@ st.set_option('deprecation.showPyplotGlobalUse', False)
 
 st.set_page_config(
     page_title="Signal Sampler",
+    page_icon="📈",
     layout="wide"
 )
 st.image(logo)
