@@ -169,4 +169,13 @@ with c2:
     fig.update_yaxes(automargin=True)
     st.plotly_chart(fig,use_container_width=True)
     if reconstruction_flag:
+        fig2.update_layout(
+        margin=dict(l=0,r=0,b=0,t=3.5),
+        legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1
+    ))
         st.plotly_chart(fig2,use_container_width=True)
