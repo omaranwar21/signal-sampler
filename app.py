@@ -1,3 +1,4 @@
+from pickle import TRUE
 import streamlit as st
 from utils import read_wav, reconstructor, sampled_signal_maxf, samplingRate, signal_sum, sampled_signal, add_noise
 import numpy as np
@@ -9,6 +10,8 @@ st.set_page_config(
     layout="wide"
 )
 
+with open("style.css") as design:
+    st.markdown(f"<style>{design.read()}</style>", unsafe_allow_html=True)
 
 if 'time' not in st.session_state:
     st.session_state.time =np.linspace(0,5,2000)
@@ -165,6 +168,13 @@ with c2:
             fig2.update_yaxes(showgrid=False)
     fig.update_xaxes(showgrid=False)
     fig.update_yaxes(showgrid=False)
+    fig.update_layout(legend=dict(
+    orientation="h",
+    yanchor="bottom",
+    y=1.02,
+    xanchor="right",
+    x=1
+    ))
     st.plotly_chart(fig,use_container_width=True)
     if reconstruction_flag:
         st.plotly_chart(fig2,use_container_width=True)
