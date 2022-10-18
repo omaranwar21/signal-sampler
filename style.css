@@ -56,3 +56,9 @@ width: 0;
 .css-6vw1hb.e1tzin5v2{
     display: none;
 }
+
+.js-plotly-plot .plotly .modebar {
+    position: absolute !important;
+   top: 450px !important;
+    right: -6px !important
+}
