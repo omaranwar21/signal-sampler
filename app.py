@@ -1,4 +1,3 @@
-from logging import basicConfig
 from pickle import TRUE
 import streamlit as st
 from utils import read_wav, reconstructor, sampled_signal_maxf, samplingRate, signal_sum, sampled_signal, add_noise
@@ -158,7 +157,7 @@ with c2:
             fig2.update_yaxes(showgrid=False)
     fig.update_xaxes(showgrid=False)
     fig.update_yaxes(showgrid=False)
-    fig.update_layout(basicConfig,legend=dict(
+    fig.update_layout(legend=dict(
     orientation="h",
     yanchor="bottom",
     y=1.02,
