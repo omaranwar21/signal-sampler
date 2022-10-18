@@ -1,3 +1,4 @@
+from logging import basicConfig
 from pickle import TRUE
 import streamlit as st
 from utils import read_wav, reconstructor, sampled_signal_maxf, samplingRate, signal_sum, sampled_signal, add_noise
@@ -34,15 +35,7 @@ if "simulated_signal" not in st.session_state:
     st.session_state.simulated_signal= {}
 st.title("Signal Sampler")
 
-with st.expander("ℹ️ - About this app", expanded=True):
 
-    st.write(
-        """     
--   The *Signal Sampler* app is an easy-to-use interface built in Streamlit for sampling singals and simulate it
-	    """
-    )
-
-    st.markdown("")
 
 c1,_ = st.columns([2,5])
 with c1:
@@ -71,9 +64,6 @@ with c1:
     noise_checkbox=st.checkbox("Add Noise",key="noise_checkbox")
     if noise_checkbox:
         noise=st.slider("SNR",min_value=1.0,step=0.5,max_value=100.0,key="noise_slider")
-
-    with st.expander("More Options"):
-        st.write("")
 
 with c4: 
     choose_signal= st.radio("Choose Signal",options=("Uploaded Signal","Simulating"),horizontal=True, key="choose_signal")
@@ -168,7 +158,7 @@ with c2:
             fig2.update_yaxes(showgrid=False)
     fig.update_xaxes(showgrid=False)
     fig.update_yaxes(showgrid=False)
-    fig.update_layout(legend=dict(
+    fig.update_layout(basicConfig,legend=dict(
     orientation="h",
     yanchor="bottom",
     y=1.02,
