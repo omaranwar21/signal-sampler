@@ -57,6 +57,11 @@ width: 0;
     display: none;
 }
 
+.js-plotly-plot .plotly .modebar {
+    position: absolute !important;
+   top: 450px !important;
+    right: -6px !important
+}
+
 .css-10trblm.e16nr0p30{
     text-align: center;
-}

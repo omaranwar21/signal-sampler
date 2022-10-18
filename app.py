@@ -45,7 +45,7 @@ with c1:
         st.session_state.time= time
         st.session_state.maxf= maxF
     
-ce, c1, ce, c2, ce, c4,ce = st.columns([0.07, 1, 0.07, 3.5, 0.07,1,0.07])
+ce, c1, ce, c2, c4, ce = st.columns([0.07, 1, 0.07, 3.5, 1, 0.07])
 with c1:
     sampling_options=("10Hz","100Hz","1KHz","10KHz","100KHz")
     if st.session_state.uploaded_file:
@@ -157,13 +157,16 @@ with c2:
             fig2.update_yaxes(showgrid=False)
     fig.update_xaxes(showgrid=False)
     fig.update_yaxes(showgrid=False)
-    fig.update_layout(legend=dict(
-    orientation="h",
-    yanchor="bottom",
-    y=1.02,
-    xanchor="right",
-    x=1
+    fig.update_layout(
+        margin=dict(l=0,r=0,b=0,t=0),
+        legend=dict(
+        orientation="h",
+        yanchor="bottom",
+        y=1.02,
+        xanchor="right",
+        x=1
     ))
+    fig.update_yaxes(automargin=True)
     st.plotly_chart(fig,use_container_width=True)
     if reconstruction_flag:
         st.plotly_chart(fig2,use_container_width=True)
