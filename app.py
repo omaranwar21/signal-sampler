@@ -4,11 +4,18 @@ from utils import read_wav, reconstructor, sampled_signal_maxf, samplingRate, si
 import numpy as np
 import plotly.graph_objects as go
 from scipy.io import wavfile
+from PIL import Image
+
+
+logo = Image.open('./logo.png')
 st.set_option('deprecation.showPyplotGlobalUse', False)
+
 st.set_page_config(
     page_title="Signal Sampler",
     layout="wide"
 )
+st.image(logo)
+
 
 with open("style.css") as design:
     st.markdown(f"<style>{design.read()}</style>", unsafe_allow_html=True)
@@ -32,7 +39,6 @@ def add_simulated_signal():
 
 if "simulated_signal" not in st.session_state:
     st.session_state.simulated_signal= {}
-st.title("Signal Sampler")
 
 
 
@@ -158,7 +164,7 @@ with c2:
     fig.update_xaxes(showgrid=False)
     fig.update_yaxes(showgrid=False)
     fig.update_layout(
-        margin=dict(l=0,r=0,b=0,t=0),
+        margin=dict(l=0,r=0,b=5,t=0),
         legend=dict(
         orientation="h",
         yanchor="bottom",
@@ -170,7 +176,7 @@ with c2:
     st.plotly_chart(fig,use_container_width=True)
     if reconstruction_flag:
         fig2.update_layout(
-        margin=dict(l=0,r=0,b=0,t=3.5),
+        margin=dict(l=0,r=0,b=5,t=3.5),
         legend=dict(
         orientation="h",
         yanchor="bottom",

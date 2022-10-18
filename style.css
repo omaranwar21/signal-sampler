@@ -59,9 +59,17 @@ width: 0;
 
 .js-plotly-plot .plotly .modebar {
     position: absolute !important;
-   top: 450px !important;
+    top: 437px !important;
     right: -6px !important
 }
 
 .css-10trblm.e16nr0p30{
-    text-align: center;
+    text-align: center }
+
+.css-1v0mbdj.etr89bj1 img{
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 20%;
+  margin-bottom: -2rem;
+}
