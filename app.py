@@ -1,10 +1,8 @@
-from pickle import TRUE
 import streamlit as st
-from utils import read_wav, reconstructor, sampled_signal_maxf, samplingRate, signal_sum, sampled_signal, add_noise
+from utils import read_wav, reconstructor, render_svg, sampled_signal_maxf, samplingRate, signal_sum, sampled_signal, add_noise
 import numpy as np
 import plotly.graph_objects as go
-from scipy.io import wavfile
-from PIL import Image
+
 
 
 st.set_option('deprecation.showPyplotGlobalUse', False)
@@ -14,8 +12,7 @@ st.set_page_config(
     page_icon="📈",
     layout="wide"
 )
-st.image("./logo.png")
-
+render_svg("logo.svg")
 
 with open("style.css") as design:
     st.markdown(f"<style>{design.read()}</style>", unsafe_allow_html=True)

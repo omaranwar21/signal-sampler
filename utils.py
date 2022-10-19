@@ -1,6 +1,10 @@
 import numpy as np
 from scipy.io import wavfile
-from scipy import signal
+from scipy import signal, fft
+import base64
+import streamlit as st
+
+
 def samplingRate(rate):
     if rate=="10Hz":
         maxV= 10.0
@@ -87,7 +91,24 @@ def read_wav(file):
 def reconstructor(recon_signal_points, sampled_time, sampled_signal):
     
     u = np.resize(recon_signal_points, (len(sampled_time), len(recon_signal_points)))
-    v = (sampled_time - u.T) / (sampled_time[1] - sampled_time[0])
+    v = (u.T-sampled_time) / (sampled_time[1] - sampled_time[0])
     m = sampled_signal * np.sinc(v)
     recon_signal = np.sum(m, axis = 1)
     return recon_signal
+
+def GetMaximumFrequencyComponent(timeReadings, amplitudeReadings):
+    magnitudes = np.abs(fft.rfft(amplitudeReadings)) / \
+        np.max(np.abs(fft.rfft(amplitudeReadings)))
+    frequencies = fft.rfftfreq(
+        len(timeReadings), (timeReadings[1] - timeReadings[0]))
+    for index, frequency in enumerate(frequencies):
+        if magnitudes[index] >= 0.05:
+            maximumFrequency = frequency
+
+
+def render_svg(svg):
+    """Renders the given svg string."""
+    svg=open(svg).read()
+    b64 = base64.b64encode(svg.encode('utf-8')).decode("utf-8")
+    html = r'<img src="data:image/svg+xml;base64,%s"/>' % b64
+    st.write(html, unsafe_allow_html=True)
