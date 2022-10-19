@@ -7,7 +7,6 @@ from scipy.io import wavfile
 from PIL import Image
 
 
-logo = Image.open('./logo.png')
 st.set_option('deprecation.showPyplotGlobalUse', False)
 
 st.set_page_config(
@@ -15,7 +14,7 @@ st.set_page_config(
     page_icon="📈",
     layout="wide"
 )
-st.image(logo)
+st.image("./logo.png")
 
 
 with open("style.css") as design:
