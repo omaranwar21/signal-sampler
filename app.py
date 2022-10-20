@@ -12,7 +12,7 @@ st.set_page_config(
     page_icon="📈",
     layout="wide"
 )
-render_svg("logo.svg")
+render_svg("svg.svg")
 
 with open("style.css") as design:
     st.markdown(f"<style>{design.read()}</style>", unsafe_allow_html=True)
