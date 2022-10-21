@@ -261,12 +261,12 @@ with middle_column:
             fig2.update_yaxes(showgrid=False)
             
     if reconstruction_flag:
-        original_signal_height = 250
+        original_signal_height = 316
         styl2 = f"""
                 <style>
                     .js-plotly-plot .plotly .modebar {{
                     position: absolute !important;
-                    top: 230px !important;
+                    top: 288px !important;
                     right: -8px !important
                 }}
                 </style>
@@ -295,7 +295,7 @@ with middle_column:
             xaxis_title="Time",
             yaxis_title="Amplitude",
             margin=dict(l=0,r=0,b=0,t=3.5),
-            height = 250
+            height = original_signal_height
         )
         fig2.update_xaxes(showgrid=False)
         fig2.update_yaxes(
