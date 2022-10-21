@@ -1,6 +1,7 @@
 import streamlit as st
 from utils import read_wav, reconstructor, render_svg, sampled_signal_maxf, samplingRate, signal_sum, sampled_signal, add_noise
 import numpy as np
+import pandas as pd
 import plotly.graph_objects as go
 
 
@@ -38,8 +39,6 @@ def add_simulated_signal():
 # Initialization of Session State attribute (simulated_signal)
 if "simulated_signal" not in st.session_state:
     st.session_state.simulated_signal= {}
-
-
 
 c1,_ = st.columns([2,5])
 with c1:
@@ -98,8 +97,11 @@ with c4:
                 signal_mag= st.slider("Choose Signal magnitude",value=1.0,min_value=0.0,max_value=100.0,step=0.5,key="mag_value")
                 add_button=st.form_submit_button("Add Signal",on_click=add_simulated_signal)
 
-
         if st.session_state.simulated_signal:
+            df=st.session_state.simulated_signal
+            # frquency=st.session_state.simulated_signal[st.session_state.signal_name]["freq_value"]
+            # st.write(df)
+            st.dataframe(df)
             remove_box= st.selectbox("choose a signal", st.session_state.simulated_signal.keys())
             remove_button=st.button("remove")
             if remove_button:
