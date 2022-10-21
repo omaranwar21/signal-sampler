@@ -1,7 +1,6 @@
 body{
     background-color: #F3E8EE;
 }
-
 footer,header{
     display: none !important;
 }
@@ -18,12 +17,13 @@ footer,header{
     z-index: 1;
 }
 
+
 .st-au.st-av.st-aw.st-ax.st-e6.st-e7.st-b6.st-e8.st-e9{
     height: 20px;
     border-radius: 5px;
 }
 
-.st-b6{
+.st-e5{
     min-height: 20px;
     border-radius: 5px;
     margin-bottom: 20px;
@@ -84,3 +84,29 @@ width: 0;
     width: 10rem;
 }
 
+/* .st-f1{
+    min-height: 20px;
+} */
+
+
+.streamlit-expander button{
+    border-color: red !important;
+    color: red;
+}
+
+.streamlit-expander button:hover{
+    border-color: rgb(255, 255, 255) !important;
+    color: rgb(255, 255, 255);
+    background-color: red;
+}
+
+.streamlit-expander button:focus{
+    box-shadow: rgb(255 0 0 / 50%) 0px 0px 0px 0.2rem;
+    outline: none;
+    color: rgb(255, 255, 255) !important;
+}
+
+
+.css-70qmjp{
+    top: -25px;
+}
