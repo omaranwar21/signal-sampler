@@ -25,7 +25,7 @@ if 'uploaded_signal' not in st.session_state:
 if 'maxf' not in st.session_state:
     st.session_state.maxf = 1
 
-
+#functio to add new signal
 def add_simulated_signal():
     if st.session_state.signal_name =="":
         st.session_state.signal_name="Signal_"+str(len(st.session_state.simulated_signal)+1)
@@ -33,7 +33,13 @@ def add_simulated_signal():
         "freq_value":st.session_state.freq_value,
         # "freq_scale":st.session_state.add_signal_freq_scale,
         "mag_value":st.session_state.mag_value
-    }    
+    }
+#functio to edit selected signal
+def edit_simulated_signal(s_name,freq,mag):
+    st.session_state.simulated_signal[s_name]={
+        "freq_value": freq,
+        "mag_value": mag
+    }
 
 # Initialization of Session State attribute (simulated_signal)
 if "simulated_signal" not in st.session_state:
@@ -111,23 +117,53 @@ with c4:
 with c1:
     if st.session_state.simulated_signal:
         #Dataframe for signals table
-        names_list=st.session_state.simulated_signal.keys()
-        data=st.session_state.simulated_signal.values()
-        df = pd.DataFrame(data , index = names_list)    
-
+        # names_list=st.session_state.simulated_signal.keys()
+        # data=st.session_state.simulated_signal.values()
+        # df = pd.DataFrame(st.session_state.simulated_signal.values() , index = st.session_state.simulated_signal.keys())    
+        #Editing Expander
         with st.expander("Edit Signal"):
+            edit_option_radio_button= st.radio("Edit option",options=("Remove","Edit"),horizontal=True, key="edit_option_radio_button")
             remove_box= st.selectbox("choose a signal", st.session_state.simulated_signal.keys())
             # st.write(remove_box)
             frquency=st.session_state.simulated_signal[remove_box]["freq_value"]
             magnitude=st.session_state.simulated_signal[remove_box]["mag_value"]
-            st.write('Frequency = ',frquency,'Hz')
-            st.write('Amplitude = ',magnitude)
-            # Button to remove signals
-            remove_button=st.button("remove")
-            if remove_button:
-                del st.session_state.simulated_signal[remove_box]
+
+            if edit_option_radio_button == "Remove":
+                st.write('Frequency = ',frquency,'Hz')
+                st.write('Amplitude = ',magnitude)
+                remove_button=st.button("Remove")
+                if remove_button:
+                    del st.session_state.simulated_signal[remove_box]
+            elif edit_option_radio_button == "Edit":
+                freq = st.number_input('Frequency',value=frquency )
+                # st.write('The current frquency is ', frquency)
+                amp = st.number_input('Amplitude', value=magnitude )
+                # st.write('The current number is ', number)
+                Save_button=st.button("Save")
+                if Save_button:
+                    edit_simulated_signal(remove_box,freq,amp)
+            # Save_button=st.button("Save",on_click=add_simulated_signal)
+            # if Save_button:
+            #     if edit_option_radio_button == "Remove":
+            #         del st.session_state.simulated_signal[remove_box]
+            #     elif edit_option_radio_button == "Edit":
+            #         pass
+
+                
+                # del st.session_state.simulated_signal[remove_box]
+            # b1,b2 = st.columns([1,1])
+            # with b1:
+                # Button to Remove signals
+            # remove_button=st.button("Remove")
+            # if remove_button:
+            #     del st.session_state.simulated_signal[remove_box]
+            # with b2:
+                # Button to Edit signals
+            
+        #Table Expander 
         with st.expander("View Signals Table"):
             # st.table(df)
+            df = pd.DataFrame(st.session_state.simulated_signal.values() , index = st.session_state.simulated_signal.keys())   
             st.dataframe(df,use_container_width=True, height=178)
 
 with c2:
