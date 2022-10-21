@@ -41,6 +41,9 @@ def edit_simulated_signal(s_name,freq,mag):
         "mag_value": mag
     }
 
+# def delete_signal(s_name):
+#     del st.session_state.simulated_signal[remove_box]
+
 # Initialization of Session State attribute (simulated_signal)
 if "simulated_signal" not in st.session_state:
     st.session_state.simulated_signal= {}
@@ -55,9 +58,9 @@ if "simulated_signal" not in st.session_state:
 #         st.session_state.time= time
 #         st.session_state.maxf= maxF
     
-ce, c4,  c2, c1, ce = st.columns([0.07, 1,  3.5, 1, 0.07])
-#column 1 responsible for sampling rate slider and adding noise
-with c1:
+ce, left_column,  middle_column, right_column, ce = st.columns([0.07, 1,  3.5, 1, 0.07])
+#right_column responsible for : sampling rate slider , adding noise ,editing and removing signals , Downloading Signal
+with right_column:
     sampling_options=("10Hz","100Hz","1KHz","10KHz","100KHz")
     # if st.session_state.uploaded_file:
     #     sampling_options=("10Hz","100Hz","1KHz","10KHz","100KHz","F(max)Hz")
@@ -78,8 +81,59 @@ with c1:
     if noise_checkbox:
         noise=st.slider("SNR",min_value=1.0,step=0.5,max_value=100.0,key="noise_slider")
 
-#column 4 responsible for uploading and simulating signals
-with c4: 
+    if st.session_state.simulated_signal:
+        #Dataframe for signals table
+        # names_list=st.session_state.simulated_signal.keys()
+        # data=st.session_state.simulated_signal.values()
+        # df = pd.DataFrame(st.session_state.simulated_signal.values() , index = st.session_state.simulated_signal.keys())    
+        #Editing Expander
+        with st.expander("Edit Signal"):
+            edit_option_radio_button= st.radio("Edit option",options=("Remove","Edit"),horizontal=True, key="edit_option_radio_button")
+            remove_box= st.selectbox("choose a signal", st.session_state.simulated_signal.keys())
+            # st.write(remove_box)
+            frquency=st.session_state.simulated_signal[remove_box]["freq_value"]
+            magnitude=st.session_state.simulated_signal[remove_box]["mag_value"]
+
+            if edit_option_radio_button == "Remove":
+                st.write('Frequency = ',frquency,'Hz')
+                st.write('Amplitude = ',magnitude)
+                remove_button=st.button("Remove")
+                if remove_button:
+                    del st.session_state.simulated_signal[remove_box]
+                    # st.expander("Edit Signal",expanded=False)
+            elif edit_option_radio_button == "Edit":
+                freq = st.number_input('Frequency',value=frquency, step=0.5)
+                # st.write('The current frquency is ', frquency)
+                amp = st.number_input('Amplitude', value=magnitude,step=0.5 )
+                # st.write('The current number is ', number)
+                Save_button=st.button("Save")
+                if Save_button:
+                    edit_simulated_signal(remove_box,freq,amp)
+            # Save_button=st.button("Save",on_click=add_simulated_signal)
+            # if Save_button:
+            #     if edit_option_radio_button == "Remove":
+            #         del st.session_state.simulated_signal[remove_box]
+            #     elif edit_option_radio_button == "Edit":
+            #         pass
+                # del st.session_state.simulated_signal[remove_box]
+            # b1,b2 = st.columns([1,1])
+            # with b1:
+                # Button to Remove signals
+            # remove_button=st.button("Remove")
+            # if remove_button:
+            #     del st.session_state.simulated_signal[remove_box]
+            # with b2:
+                # Button to Edit signals
+            
+        #Table Expander 
+        with st.expander("View Signals Table"):
+            # st.table(df)
+            df = pd.DataFrame(st.session_state.simulated_signal.values() , index = st.session_state.simulated_signal.keys())   
+            st.dataframe(df,use_container_width=True, height=178)
+#End of right_column
+
+#left_column responsible for : uploading ot simulating signals , selecting seginal period , add signals ,selecting type of graph 
+with left_column: 
     #radio buttons to select to upload or simulate signal
     choose_signal= st.radio("Choose Signal",options=("Uploaded Signal","Simulating"),horizontal=True, key="choose_signal")
     if choose_signal=="Simulating":
@@ -114,59 +168,10 @@ with c4:
                 st.session_state.uploaded_signal=signal
                 st.session_state.time= time
     selected_graphs= st.selectbox("Select type of graph",("Signal with Samples","Samples Only","Signal Only","Reconstructed Signal"),key="graph_type")        
-with c1:
-    if st.session_state.simulated_signal:
-        #Dataframe for signals table
-        # names_list=st.session_state.simulated_signal.keys()
-        # data=st.session_state.simulated_signal.values()
-        # df = pd.DataFrame(st.session_state.simulated_signal.values() , index = st.session_state.simulated_signal.keys())    
-        #Editing Expander
-        with st.expander("Edit Signal"):
-            edit_option_radio_button= st.radio("Edit option",options=("Remove","Edit"),horizontal=True, key="edit_option_radio_button")
-            remove_box= st.selectbox("choose a signal", st.session_state.simulated_signal.keys())
-            # st.write(remove_box)
-            frquency=st.session_state.simulated_signal[remove_box]["freq_value"]
-            magnitude=st.session_state.simulated_signal[remove_box]["mag_value"]
+#End of left_column
 
-            if edit_option_radio_button == "Remove":
-                st.write('Frequency = ',frquency,'Hz')
-                st.write('Amplitude = ',magnitude)
-                remove_button=st.button("Remove")
-                if remove_button:
-                    del st.session_state.simulated_signal[remove_box]
-            elif edit_option_radio_button == "Edit":
-                freq = st.number_input('Frequency',value=frquency )
-                # st.write('The current frquency is ', frquency)
-                amp = st.number_input('Amplitude', value=magnitude )
-                # st.write('The current number is ', number)
-                Save_button=st.button("Save")
-                if Save_button:
-                    edit_simulated_signal(remove_box,freq,amp)
-            # Save_button=st.button("Save",on_click=add_simulated_signal)
-            # if Save_button:
-            #     if edit_option_radio_button == "Remove":
-            #         del st.session_state.simulated_signal[remove_box]
-            #     elif edit_option_radio_button == "Edit":
-            #         pass
-
-                
-                # del st.session_state.simulated_signal[remove_box]
-            # b1,b2 = st.columns([1,1])
-            # with b1:
-                # Button to Remove signals
-            # remove_button=st.button("Remove")
-            # if remove_button:
-            #     del st.session_state.simulated_signal[remove_box]
-            # with b2:
-                # Button to Edit signals
-            
-        #Table Expander 
-        with st.expander("View Signals Table"):
-            # st.table(df)
-            df = pd.DataFrame(st.session_state.simulated_signal.values() , index = st.session_state.simulated_signal.keys())   
-            st.dataframe(df,use_container_width=True, height=178)
-
-with c2:
+#middle_column responsible for viewing signals graphs(Original and Reconstructed)
+with middle_column:
     signal_flag=False
     sample_flag=False
     reconstruction_flag=False
@@ -253,6 +258,7 @@ with c2:
             automargin=True,
         )
         st.plotly_chart(fig2, use_container_width=True)
+#End of middle_column
 
-with c1:
+with right_column:
     st.download_button(label="Download data as CSV", data=download_signal(full_signals,time),file_name="signal_data.csv",mime='text/csv')
