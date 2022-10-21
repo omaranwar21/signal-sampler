@@ -96,26 +96,26 @@ with c4:
                     )
                 signal_mag= st.slider("Choose Signal magnitude",value=1.0,min_value=0.0,max_value=100.0,step=0.5,key="mag_value")
                 add_button=st.form_submit_button("Add Signal",on_click=add_simulated_signal)
-
-        if st.session_state.simulated_signal:
-            df=st.session_state.simulated_signal.values()
-            # frquency=st.session_state.simulated_signal[st.session_state.signal_name]["freq_value"]
-            # st.write(st.session_state.signal_name)
-            # st.write(st.session_state.simulated_signal[st.session_state.signal_name])
-            # st.dataframe(df)
-            st.table(df)
-            remove_box= st.selectbox("choose a signal", st.session_state.simulated_signal.keys())
-            # st.write(remove_box)
-            frquency=st.session_state.simulated_signal[remove_box]["freq_value"]
-            magnitude=st.session_state.simulated_signal[remove_box]["mag_value"]
-            st.write('Frequency = ',frquency,'Hz')
-            st.write('Amplitude = ',magnitude)
-    
-            remove_button=st.button("remove")
-            if remove_button:
-                del st.session_state.simulated_signal[remove_box]
-
     selected_graphs= st.selectbox("Select type of graph",("Signal with Samples","Samples Only","Signal Only","Reconstructed Signal"),key="graph_type")        
+with c1:
+    if st.session_state.simulated_signal:
+        df=st.session_state.simulated_signal.values()
+        # frquency=st.session_state.simulated_signal[st.session_state.signal_name]["freq_value"]
+        # st.write(st.session_state.signal_name)
+        # st.write(st.session_state.simulated_signal[st.session_state.signal_name])
+        # st.dataframe(df)
+        st.table(df)
+        remove_box= st.selectbox("choose a signal", st.session_state.simulated_signal.keys())
+        # st.write(remove_box)
+        frquency=st.session_state.simulated_signal[remove_box]["freq_value"]
+        magnitude=st.session_state.simulated_signal[remove_box]["mag_value"]
+        st.write('Frequency = ',frquency,'Hz')
+        st.write('Amplitude = ',magnitude)
+
+        remove_button=st.button("remove")
+        if remove_button:
+            del st.session_state.simulated_signal[remove_box]
+
         
                 
 
@@ -157,17 +157,19 @@ with c2:
     fig = go.Figure()
     fig2=go.Figure()
     if signal_flag:
-        fig.add_trace(go.Scatter(x=time, y=full_signals,
-                    mode='lines',
-                    name='lines'))
+        fig.add_trace(go.Scatter(x=time,
+                                 y=full_signals,
+                                 mode='lines',
+                                 name='lines'))
     if sample_flag:
         if st.session_state.sampling_rate_scale=="F(max)Hz":
             sampled_x, sampled_time=sampled_signal_maxf(full_signals,time, st.session_state.sampling_rate, st.session_state.maxf)
         else:
             sampled_x, sampled_time=sampled_signal(full_signals,time, st.session_state.sampling_rate, st.session_state.sampling_rate_scale)
-        fig.add_trace(go.Scatter(x=sampled_time, y=sampled_x,
-                    mode='markers',
-                    name='markers'))
+        fig.add_trace(go.Scatter(x=sampled_time,
+                                 y=sampled_x,
+                                 mode='markers',
+                                 name='markers'))
     if reconstruction_flag:
         if st.session_state.sampling_rate_scale=="F(max)Hz":
             sampled_x, sampled_time=sampled_signal_maxf(full_signals,time, st.session_state.sampling_rate, st.session_state.maxf)
@@ -183,19 +185,23 @@ with c2:
     fig.update_xaxes(showgrid=False)
     fig.update_yaxes(showgrid=False)
     fig.update_layout(
+        title="Original Signal",
+        xaxis_title="Time",
+        yaxis_title="Amplitude",
         margin=dict(l=0,r=0,b=5,t=0),
-        legend=dict(
-        orientation="h",
-        yanchor="bottom",
-        y=1.02,
-        xanchor="right",
-        x=1
-    ))
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+        )
+
     fig.update_yaxes(automargin=True)
     st.plotly_chart(fig,use_container_width=True)
+
+
     if reconstruction_flag:
         fig2.update_layout(
-            margin=dict(l=0,r=0,b=0,t=3.5)
+            # title="Reconstructed Signal",
+            xaxis_title="Time",
+            yaxis_title="Amplitude",
+            margin=dict(l=0,r=0,b=0,t=3.5),
         )
         fig2.update_xaxes(showgrid=False)
         fig2.update_yaxes(
