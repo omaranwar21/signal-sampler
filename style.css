@@ -115,16 +115,28 @@ width: 0;
     color: green !important;
 }
 
-.step-up :hover{
-    background-color: green;
-    color: white;
+.step-up:hover{
+    background-color: green !important;
+    color: white !important;
+}
+
+.step-up:focus{
+    color: green !important;
+    background-color: rgb(8, 5, 38) !important;
+    box-shadow: 0px 0px 0px 0px !important;
 }
 
 .step-down{
     color: red !important;
 }
 
-.step-down :hover{
-    background-color: red;
-    color: white;
+.step-down:hover{
+    background-color: red !important;
+    color: white !important;
+}
+
+.step-down:focus{
+    color: red !important;
+    background-color: rgb(8, 5, 38) !important;
+    box-shadow: 0px 0px 0px 0px !important;
 }
