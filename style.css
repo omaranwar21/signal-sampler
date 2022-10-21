@@ -35,8 +35,7 @@ footer,header{
 }
 
 .css-demzbm.e88czh83{
-width: 0;
-
+    width: 0;
 }
 
 .css-10y5sf6{
@@ -59,8 +58,8 @@ width: 0;
 
 .js-plotly-plot .plotly .modebar {
     position: absolute !important;
-    top: 437px !important;
-    right: -6px !important
+    top: 465px !important;
+    right: -8px !important
 }
 
 .css-10trblm.e16nr0p30{
@@ -83,11 +82,6 @@ width: 0;
     margin-right: auto;
     width: 10rem;
 }
-
-/* .st-f1{
-    min-height: 20px;
-} */
-
 
 .streamlit-expander button{
     border-color: red !important;
@@ -139,4 +133,8 @@ width: 0;
     color: red !important;
     background-color: rgb(8, 5, 38) !important;
     box-shadow: 0px 0px 0px 0px !important;
+}
+
+.css-snvk30{
+    gap: 0 !important;
 }

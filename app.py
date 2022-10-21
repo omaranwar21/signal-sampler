@@ -1,4 +1,5 @@
 import string
+from turtle import width
 import streamlit as st
 from utils import download_signal, read_csv, read_wav, reconstructor, render_svg, sampled_signal_maxf, samplingRate, signal_sum, sampled_signal, add_noise
 import numpy as np
@@ -258,12 +259,29 @@ with middle_column:
                     name='lines'))
             fig2.update_xaxes(showgrid=False)
             fig2.update_yaxes(showgrid=False)
+            
+    if reconstruction_flag:
+        original_signal_height = 250
+        styl2 = f"""
+                <style>
+                    .js-plotly-plot .plotly .modebar {{
+                    position: absolute !important;
+                    top: 230px !important;
+                    right: -8px !important
+                }}
+                </style>
+                """  
+        st.markdown(styl2, unsafe_allow_html=True)
+    else:
+        original_signal_height = 500
+
     fig.update_xaxes(showgrid=False)
     fig.update_yaxes(showgrid=False)
     fig.update_layout(
         title="Original Signal",
         xaxis_title="Time",
         yaxis_title="Amplitude",
+        height = original_signal_height,
         margin=dict(l=0,r=0,b=5,t=0),
         legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
         )
@@ -277,11 +295,12 @@ with middle_column:
             xaxis_title="Time",
             yaxis_title="Amplitude",
             margin=dict(l=0,r=0,b=0,t=3.5),
+            height = 250
         )
         fig2.update_xaxes(showgrid=False)
         fig2.update_yaxes(
             showgrid=False,
-            automargin=True,
+            automargin=True
         )
         st.plotly_chart(fig2, use_container_width=True)
 #End of middle_column
