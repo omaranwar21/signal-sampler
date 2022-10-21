@@ -43,8 +43,8 @@ def signal_sum(Signals,t):
     Sum=np.zeros(len(t))
     for i in keys:
         factor=1
-        if Signals[i]["freq_scale"]=="100KHz":
-            factor=1000
+        # if Signals[i]["freq_scale"]=="100KHz":
+        #     factor=1000
         signal= Signals[i]["mag_value"]*np.sin(2*np.pi*Signals[i]["freq_value"]*t*factor)
         Sum+=signal
     return Sum
