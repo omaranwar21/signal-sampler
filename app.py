@@ -1,5 +1,5 @@
 import streamlit as st
-from utils import read_wav, reconstructor, render_svg, sampled_signal_maxf, samplingRate, signal_sum, sampled_signal, add_noise
+from utils import download_signal, read_csv, read_wav, reconstructor, render_svg, sampled_signal_maxf, samplingRate, signal_sum, sampled_signal, add_noise
 import numpy as np
 import pandas as pd
 import plotly.graph_objects as go
@@ -97,12 +97,16 @@ with c4:
                 signal_mag= st.slider("Choose Signal magnitude",value=1.0,min_value=0.0,max_value=100.0,step=0.5,key="mag_value")
                 add_button=st.form_submit_button("Add Signal",on_click=add_simulated_signal)
     elif choose_signal=="Uploaded Signal":
-        file=st.file_uploader(label="Upload Signal File", key="uploaded_file")
+        file=st.file_uploader(label="Upload Signal File", key="uploaded_file",type=["csv","wav"])
         if file:
-            signal, time, maxF=read_wav(file)
-            st.session_state.uploaded_signal=signal
-            st.session_state.time= time
-            st.session_state.maxf= maxF
+            if file.name.split(".")[-1]=="wav":
+                signal, time=read_wav(file)
+                st.session_state.uploaded_signal=signal
+                st.session_state.time= time
+            elif file.name.split(".")[-1]=="csv":
+                signal, time=read_csv(file)
+                st.session_state.uploaded_signal=signal
+                st.session_state.time= time
     selected_graphs= st.selectbox("Select type of graph",("Signal with Samples","Samples Only","Signal Only","Reconstructed Signal"),key="graph_type")        
 with c1:
     if st.session_state.simulated_signal:
@@ -213,3 +217,6 @@ with c2:
             automargin=True,
         )
         st.plotly_chart(fig2, use_container_width=True)
+
+with c1:
+    st.download_button(label="Download data as CSV", data=download_signal(full_signals,time),file_name="signal_data.csv",mime='text/csv')

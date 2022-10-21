@@ -3,6 +3,7 @@ from scipy.io import wavfile
 from scipy import signal, fft
 import base64
 import streamlit as st
+import pandas as pd
 
 
 def samplingRate(rate):
@@ -80,12 +81,11 @@ def read_wav(file):
     try:
         sample_rate, samples = wavfile.read(file)
         time= np.linspace(0,samples.shape[0]/sample_rate,samples.shape[0] )
-        frequencies,_,_ = signal.spectrogram(samples, sample_rate)
-        return samples, time, frequencies[-1]
+        return samples, time
     except:
         time=np.linspace(0,5,2000)
         full_signals=np.zeros(time.shape)
-        return full_signals, time, 1
+        return full_signals, time
 
 
 def reconstructor(recon_signal_points, sampled_time, sampled_signal):
@@ -113,3 +113,12 @@ def render_svg(svg):
     html = r'<img src="data:image/svg+xml;base64,%s"/>' % b64
     st.write(html, unsafe_allow_html=True)
 
+@st.cache
+def download_signal(signal,time):
+    df= pd.DataFrame({"Y":signal,"X":time})
+    return df.to_csv().encode("utf-8")
+def read_csv(file):
+    df= pd.read_csv(file)
+    signal= np.array(df['Y'])
+    time= np.array(df["X"])
+    return signal,time
