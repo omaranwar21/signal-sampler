@@ -98,14 +98,23 @@ with c4:
                 add_button=st.form_submit_button("Add Signal",on_click=add_simulated_signal)
 
         if st.session_state.simulated_signal:
-            df=st.session_state.simulated_signal
+            df=st.session_state.simulated_signal.values()
             # frquency=st.session_state.simulated_signal[st.session_state.signal_name]["freq_value"]
-            # st.write(df)
-            st.dataframe(df)
+            # st.write(st.session_state.signal_name)
+            # st.write(st.session_state.simulated_signal[st.session_state.signal_name])
+            # st.dataframe(df)
+            st.table(df)
             remove_box= st.selectbox("choose a signal", st.session_state.simulated_signal.keys())
+            # st.write(remove_box)
+            frquency=st.session_state.simulated_signal[remove_box]["freq_value"]
+            magnitude=st.session_state.simulated_signal[remove_box]["mag_value"]
+            st.write('Frequency = ',frquency,'Hz')
+            st.write('Amplitude = ',magnitude)
+    
             remove_button=st.button("remove")
             if remove_button:
                 del st.session_state.simulated_signal[remove_box]
+
     selected_graphs= st.selectbox("Select type of graph",("Signal with Samples","Samples Only","Signal Only","Reconstructed Signal"),key="graph_type")        
         
                 
