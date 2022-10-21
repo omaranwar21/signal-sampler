@@ -1,3 +1,4 @@
+import string
 import streamlit as st
 from utils import download_signal, read_csv, read_wav, reconstructor, render_svg, sampled_signal_maxf, samplingRate, signal_sum, sampled_signal, add_noise
 import numpy as np
@@ -107,6 +108,28 @@ with right_column:
                 amp = st.number_input('Amplitude', value=magnitude,step=0.5 )
                 # st.write('The current number is ', number)
                 Save_button=st.button("Save")
+
+                styl = f"""
+                <style>
+                    .streamlit-expander button{{
+                        border-color: green !important;
+                        color: green;
+                    }}
+                    .streamlit-expander button:hover{{
+                        border-color: rgb(255, 255, 255) !important;
+                        color: rgb(255, 255, 255);
+                        background-color: green;
+                    }}
+
+                    .streamlit-expander button:focus{{
+                        box-shadow: rgb(0 128 0 / 50%) 0px 0px 0px 0.2rem;
+                        outline: none;
+                        color: rgb(255, 255, 255) !important;
+                    }}
+                </style>
+                """  
+                st.markdown(styl, unsafe_allow_html=True)
+
                 if Save_button:
                     edit_simulated_signal(remove_box,freq,amp)
             # Save_button=st.button("Save",on_click=add_simulated_signal)
@@ -130,6 +153,7 @@ with right_column:
             # st.table(df)
             df = pd.DataFrame(st.session_state.simulated_signal.values() , index = st.session_state.simulated_signal.keys())   
             st.dataframe(df,use_container_width=True, height=178)
+
 #End of right_column
 
 #left_column responsible for : uploading ot simulating signals , selecting seginal period , add signals ,selecting type of graph 
@@ -167,7 +191,9 @@ with left_column:
                 signal, time=read_csv(file)
                 st.session_state.uploaded_signal=signal
                 st.session_state.time= time
-    selected_graphs= st.selectbox("Select type of graph",("Signal with Samples","Samples Only","Signal Only","Reconstructed Signal"),key="graph_type")        
+    selected_graphs= st.selectbox("Select type of graph",("Signal with Samples","Samples Only","Signal Only","Reconstructed Signal"),key="graph_type") 
+
+     
 #End of left_column
 
 #middle_column responsible for viewing signals graphs(Original and Reconstructed)

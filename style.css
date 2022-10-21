@@ -110,3 +110,21 @@ width: 0;
 .css-70qmjp{
     top: -25px;
 }
+
+.step-up{
+    color: green !important;
+}
+
+.step-up :hover{
+    background-color: green;
+    color: white;
+}
+
+.step-down{
+    color: red !important;
+}
+
+.step-down :hover{
+    background-color: red;
+    color: white;
+}
