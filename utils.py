@@ -118,7 +118,10 @@ def download_signal(signal,time):
     df= pd.DataFrame({"Y":signal,"X":time})
     return df.to_csv().encode("utf-8")
 def read_csv(file):
-    df= pd.read_csv(file)
-    signal= np.array(df['Y'])
-    time= np.array(df["X"])
-    return signal,time
+    try:
+        df= pd.read_csv(file)
+        signal= np.array(df['Y'])
+        time= np.array(df["X"])
+        return signal,time
+    except:
+        return ValueError("Import a file with X as time and Y as amplitude")

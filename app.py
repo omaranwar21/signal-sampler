@@ -1,5 +1,3 @@
-import string
-from turtle import width
 import streamlit as st
 from utils import download_signal, read_csv, read_wav, reconstructor, render_svg, sampled_signal_maxf, samplingRate, signal_sum, sampled_signal, add_noise
 import numpy as np
@@ -26,14 +24,18 @@ if 'uploaded_signal' not in st.session_state:
     st.session_state.uploaded_signal = np.zeros(st.session_state.time.shape)
 if 'maxf' not in st.session_state:
     st.session_state.maxf = 1
+if 'choose_signal' not in st.session_state:
+    st.session_state.choose_signal = "Uploaded Signal"
 
 #functio to add new signal
 def add_simulated_signal():
+    if st.session_state.signal_name in st.session_state.simulated_signal.keys():
+        left_column.error("duplicated Name")
+        return 
     if st.session_state.signal_name =="":
         st.session_state.signal_name="Signal_"+str(len(st.session_state.simulated_signal)+1)
     st.session_state.simulated_signal[st.session_state.signal_name]={
         "freq_value":st.session_state.freq_value,
-        # "freq_scale":st.session_state.add_signal_freq_scale,
         "mag_value":st.session_state.mag_value
     }
 #functio to edit selected signal
@@ -43,29 +45,17 @@ def edit_simulated_signal(s_name,freq,mag):
         "mag_value": mag
     }
 
-# def delete_signal(s_name):
-#     del st.session_state.simulated_signal[remove_box]
-
 # Initialization of Session State attribute (simulated_signal)
 if "simulated_signal" not in st.session_state:
     st.session_state.simulated_signal= {}
 
 
-# c1,_ = st.columns([2,5])
-# with c1:
-#     file=st.file_uploader(label="Upload Signal File", key="uploaded_file")
-#     if file:
-#         signal, time, maxF=read_wav(file)
-#         st.session_state.uploaded_signal=signal
-#         st.session_state.time= time
-#         st.session_state.maxf= maxF
-    
+
 ce, left_column,  middle_column, right_column, ce = st.columns([0.07, 1,  3.5, 1, 0.07])
 #right_column responsible for : sampling rate slider , adding noise ,editing and removing signals , Downloading Signal
 with right_column:
+    st.header(" ")
     sampling_options=("10Hz","100Hz","1KHz","10KHz","100KHz")
-    # if st.session_state.uploaded_file:
-    #     sampling_options=("10Hz","100Hz","1KHz","10KHz","100KHz","F(max)Hz")
     #sampling_rate_scale variable to store scale of frequency from selectbox
     sampling_rate_scale= st.selectbox("Scale of freq.",sampling_options,key="sampling_rate_scale")
     #getting maxV, minV,step,format values from samplingRate() function
@@ -81,18 +71,13 @@ with right_column:
         )
     noise_checkbox=st.checkbox("Add Noise",key="noise_checkbox")
     if noise_checkbox:
-        noise=st.slider("SNR",min_value=1.0,step=0.5,max_value=100.0,key="noise_slider")
+        noise=st.slider("SNR",min_value=0.1,step=0.1,max_value=100.0,value=1.0,key="noise_slider")
 
-    if st.session_state.simulated_signal:
-        #Dataframe for signals table
-        # names_list=st.session_state.simulated_signal.keys()
-        # data=st.session_state.simulated_signal.values()
-        # df = pd.DataFrame(st.session_state.simulated_signal.values() , index = st.session_state.simulated_signal.keys())    
+    if st.session_state.simulated_signal and st.session_state.choose_signal=="Simulating":
         #Editing Expander
         with st.expander("Edit Signal"):
             edit_option_radio_button= st.radio("Edit option",options=("Remove","Edit"),horizontal=True, key="edit_option_radio_button")
             remove_box= st.selectbox("choose a signal", st.session_state.simulated_signal.keys())
-            # st.write(remove_box)
             frquency=st.session_state.simulated_signal[remove_box]["freq_value"]
             magnitude=st.session_state.simulated_signal[remove_box]["mag_value"]
 
@@ -102,12 +87,10 @@ with right_column:
                 remove_button=st.button("Remove")
                 if remove_button:
                     del st.session_state.simulated_signal[remove_box]
-                    # st.expander("Edit Signal",expanded=False)
+                    st.experimental_rerun()
             elif edit_option_radio_button == "Edit":
                 freq = st.number_input('Frequency',value=frquency, step=0.5)
-                # st.write('The current frquency is ', frquency)
                 amp = st.number_input('Amplitude', value=magnitude,step=0.5 )
-                # st.write('The current number is ', number)
                 Save_button=st.button("Save")
 
                 styl = f"""
@@ -133,21 +116,6 @@ with right_column:
 
                 if Save_button:
                     edit_simulated_signal(remove_box,freq,amp)
-            # Save_button=st.button("Save",on_click=add_simulated_signal)
-            # if Save_button:
-            #     if edit_option_radio_button == "Remove":
-            #         del st.session_state.simulated_signal[remove_box]
-            #     elif edit_option_radio_button == "Edit":
-            #         pass
-                # del st.session_state.simulated_signal[remove_box]
-            # b1,b2 = st.columns([1,1])
-            # with b1:
-                # Button to Remove signals
-            # remove_button=st.button("Remove")
-            # if remove_button:
-            #     del st.session_state.simulated_signal[remove_box]
-            # with b2:
-                # Button to Edit signals
             
         #Table Expander 
         with st.expander("View Signals Table"):
@@ -158,7 +126,8 @@ with right_column:
 #End of right_column
 
 #left_column responsible for : uploading ot simulating signals , selecting seginal period , add signals ,selecting type of graph 
-with left_column: 
+with left_column:
+    st.header(" ") 
     #radio buttons to select to upload or simulate signal
     choose_signal= st.radio("Choose Signal",options=("Uploaded Signal","Simulating"),horizontal=True, key="choose_signal")
     if choose_signal=="Simulating":
@@ -173,13 +142,13 @@ with left_column:
                 # sampling_rate_scale= st.selectbox("Scale of freq.",("100Hz","100KHz"),key="add_signal_freq_scale")
                 signal_freq = st.slider(
                         "Choose Signal freqency",
-                        min_value=0.0,
+                        min_value=0.5,
                         max_value=100.0,
                         step=0.5,
                         value=1.0,
                         key="freq_value"
                     )
-                signal_mag= st.slider("Choose Signal magnitude",value=1.0,min_value=0.0,max_value=100.0,step=0.5,key="mag_value")
+                signal_mag= st.slider("Choose Signal magnitude",value=1.0,min_value=0.5,max_value=100.0,step=0.5,key="mag_value")
                 add_button=st.form_submit_button("Add Signal",on_click=add_simulated_signal)
     elif choose_signal=="Uploaded Signal":
         file=st.file_uploader(label="Upload Signal File", key="uploaded_file",type=["csv","wav"])
@@ -189,9 +158,12 @@ with left_column:
                 st.session_state.uploaded_signal=signal
                 st.session_state.time= time
             elif file.name.split(".")[-1]=="csv":
-                signal, time=read_csv(file)
-                st.session_state.uploaded_signal=signal
-                st.session_state.time= time
+                try:
+                    signal, time=read_csv(file)
+                    st.session_state.uploaded_signal=signal
+                    st.session_state.time= time
+                except:
+                    st.error("Import a file with X as time and Y as amplitude")
     selected_graphs= st.selectbox("Select type of graph",("Signal with Samples","Samples Only","Signal Only","Reconstructed Signal"),key="graph_type") 
 
      
@@ -218,6 +190,7 @@ with middle_column:
         signal_flag=True
         sample_flag=True
         reconstruction_flag=True
+        # st.markdown(f"<a href='#linkto_bottom'>Link to bottom</a>", unsafe_allow_html=True)
 
     time=np.linspace(0,5,2000)
     full_signals=np.zeros(time.shape)
@@ -278,7 +251,6 @@ with middle_column:
     fig.update_xaxes(showgrid=False)
     fig.update_yaxes(showgrid=False)
     fig.update_layout(
-        title="Original Signal",
         xaxis_title="Time",
         yaxis_title="Amplitude",
         height = original_signal_height,
@@ -287,6 +259,7 @@ with middle_column:
         )
 
     fig.update_yaxes(automargin=True)
+    st.write('''###### Original Signal''')
     st.plotly_chart(fig,use_container_width=True)
 
     if reconstruction_flag:
@@ -302,6 +275,7 @@ with middle_column:
             showgrid=False,
             automargin=True
         )
+        st.write('''###### Reconstructed Signal''')
         st.plotly_chart(fig2, use_container_width=True)
 #End of middle_column
 
