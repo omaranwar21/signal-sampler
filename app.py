@@ -84,8 +84,8 @@ with right_column:
             if remove_button:
                 del st.session_state.simulated_signal[selected_name]
         elif edit_option_radio_button == "Edit":
-            freq = st.number_input('Frequency',value=frquency, step=0.5)
-            amp = st.number_input('Amplitude', value=magnitude,step=0.5 )
+            freq = st.number_input('Frequency',value=int(frquency))
+            amp = st.number_input('Amplitude', value=int(magnitude))
             Save_button=st.button("Save")
 
             styl = f"""
@@ -138,13 +138,14 @@ with left_column:
                 # sampling_rate_scale= st.selectbox("Scale of freq.",("100Hz","100KHz"),key="add_signal_freq_scale")
                 signal_freq = st.slider(
                         "Choose Signal freqency",
-                        min_value=0.5,
-                        max_value=100.0,
-                        step=0.5,
-                        value=1.0,
-                        key="freq_value"
+                        min_value=1,
+                        max_value=100,
+                        step=1,
+                        value=1,
+                        key="freq_value",
+                        format=format
                     )
-                signal_mag= st.slider("Choose Signal magnitude",value=1.0,min_value=0.5,max_value=100.0,step=0.5,key="mag_value")
+                signal_mag= st.slider("Choose Signal magnitude",value=1,min_value=1,max_value=100,step=1,key="mag_value")
                 add_button=st.form_submit_button("Add Signal",on_click=add_simulated_signal)
     elif choose_signal=="Uploaded Signal":
         file=st.file_uploader(label="Upload Signal File", key="uploaded_file",type=["csv","wav"])
@@ -186,7 +187,7 @@ with left_column:
                     st.error("Import a file with X as time and Y as amplitude")
     selected_graphs= st.selectbox("Select type of graph",("Signal with Samples","Samples Only","Signal Only","Reconstructed Signal"),key="graph_type") 
 
-     
+
 #End of left_column
 
 #middle_column responsible for viewing signals graphs(Original and Reconstructed)
