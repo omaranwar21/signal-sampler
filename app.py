@@ -71,49 +71,50 @@ with right_column:
 
     if st.session_state.simulated_signal and st.session_state.choose_signal=="Simulating":
         #Editing Expander
-        with st.expander("Edit Signal"):
-            edit_option_radio_button= st.radio("Edit option",options=("Remove","Edit"),horizontal=True, key="edit_option_radio_button")
-            selected_name= st.selectbox("choose a signal", st.session_state.simulated_signal.keys())
-            frquency=st.session_state.simulated_signal[selected_name]["freq_value"]
-            magnitude=st.session_state.simulated_signal[selected_name]["mag_value"]
+        # with st.expander("Edit Signal"):
+        edit_option_radio_button= st.radio("Edit option",options=("Remove","Edit","View Table"),horizontal=True, key="edit_option_radio_button")
+        selected_name= st.selectbox("choose a signal", st.session_state.simulated_signal.keys())
+        frquency=st.session_state.simulated_signal[selected_name]["freq_value"]
+        magnitude=st.session_state.simulated_signal[selected_name]["mag_value"]
 
-            if edit_option_radio_button == "Remove":
-                st.write('Frequency = ',frquency,'Hz')
-                st.write('Amplitude = ',magnitude)
-                remove_button=st.button("Remove")
-                if remove_button:
-                    del st.session_state.simulated_signal[selected_name]
-            elif edit_option_radio_button == "Edit":
-                freq = st.number_input('Frequency',value=frquency, step=0.5)
-                amp = st.number_input('Amplitude', value=magnitude,step=0.5 )
-                Save_button=st.button("Save")
+        if edit_option_radio_button == "Remove":
+            st.write('Frequency = ',frquency,'Hz')
+            st.write('Amplitude = ',magnitude)
+            remove_button=st.button("Remove")
+            if remove_button:
+                del st.session_state.simulated_signal[selected_name]
+        elif edit_option_radio_button == "Edit":
+            freq = st.number_input('Frequency',value=frquency, step=0.5)
+            amp = st.number_input('Amplitude', value=magnitude,step=0.5 )
+            Save_button=st.button("Save")
 
-                styl = f"""
-                <style>
-                    .streamlit-expander button{{
-                        border-color: green !important;
-                        color: green;
-                    }}
-                    .streamlit-expander button:hover{{
-                        border-color: rgb(255, 255, 255) !important;
-                        color: rgb(255, 255, 255);
-                        background-color: green;
-                    }}
+            styl = f"""
+            <style>
+                .streamlit-expander button{{
+                    border-color: green !important;
+                    color: green;
+                }}
+                .streamlit-expander button:hover{{
+                    border-color: rgb(255, 255, 255) !important;
+                    color: rgb(255, 255, 255);
+                    background-color: green;
+                }}
 
-                    .streamlit-expander button:focus{{
-                        box-shadow: rgb(0 128 0 / 50%) 0px 0px 0px 0.2rem;
-                        outline: none;
-                        color: rgb(255, 255, 255) !important;
-                    }}
-                </style>
-                """  
-                st.markdown(styl, unsafe_allow_html=True)
+                .streamlit-expander button:focus{{
+                    box-shadow: rgb(0 128 0 / 50%) 0px 0px 0px 0.2rem;
+                    outline: none;
+                    color: rgb(255, 255, 255) !important;
+                }}
+            </style>
+            """  
+            st.markdown(styl, unsafe_allow_html=True)
 
-                if Save_button:
-                    edit_simulated_signal(selected_name,freq,amp)
+            if Save_button:
+                edit_simulated_signal(selected_name,freq,amp)
             
         #Table Expander 
-        with st.expander("View Signals Table"):
+        if edit_option_radio_button == "View Table": 
+        # with st.expander("View Signals Table"):
             # st.table(df)
             df = pd.DataFrame(st.session_state.simulated_signal.values() , index = st.session_state.simulated_signal.keys())   
             st.dataframe(df,use_container_width=True, height=178)
