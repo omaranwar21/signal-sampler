@@ -1,5 +1,10 @@
 body{
     background-color: #F3E8EE;
+    font-size: 22px !important;
+}
+
+.css-v1vwiw{
+    font-size: 20px !important;
 }
 footer,header{
     display: none !important;
@@ -59,7 +64,8 @@ footer,header{
 .js-plotly-plot .plotly .modebar {
     position: absolute !important;
     top: 465px !important;
-    right: -8px !important
+    right: -8px !important;
+    display: none;
 }
 
 .css-10trblm.e16nr0p30{

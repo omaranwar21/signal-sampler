@@ -20,7 +20,7 @@ with open("style.css") as design:
 if 'time' not in st.session_state:
     st.session_state.time =np.linspace(0,5,2000)
 if 'uploaded_signal' not in st.session_state:
-    st.session_state.uploaded_signal = np.zeros(st.session_state.time.shape)
+    st.session_state.uploaded_signal = np.sin(2*np.pi*st.session_state.time)
 
 
 #function to add new signal
@@ -43,9 +43,10 @@ def edit_simulated_signal(signal_name,freq,mag):
 
 # Initialization of Session State attribute (simulated_signal)
 if "simulated_signal" not in st.session_state:
-    st.session_state.simulated_signal= {}
+    st.session_state.simulated_signal= {"signal_1":{"mag_value":1,"freq_value":1}}
 
-
+if "choose_signal" not in st.session_state:
+    st.session_state.choose_signal="Simulating"
 
 ce, left_column,  middle_column, right_column, ce = st.columns([0.07, 1,  3.5, 1, 0.07])
 #right_column responsible for : sampling rate slider , adding noise ,editing and removing signals , Downloading Signal
@@ -229,7 +230,8 @@ with middle_column:
 
     if st.session_state.noise_checkbox:
         full_signals=add_noise(full_signals,st.session_state.noise_slider)
-    fig = go.Figure()
+    layout=go.Layout(xaxis={"fixedrange":True},yaxis={"fixedrange":True})
+    fig = go.Figure(layout=layout)
     fig2=go.Figure()
     if signal_flag:
         fig.add_trace(go.Scatter(x=time,
@@ -257,23 +259,22 @@ with middle_column:
             
     
 
-    fig.update_xaxes(showgrid=True, zerolinecolor='black', gridcolor='lightblue')
+    fig.update_xaxes(showgrid=True, zerolinecolor='black', gridcolor='lightblue',)
     fig.update_yaxes(showgrid=True, zerolinecolor='black', gridcolor='lightblue')
     fig.update_layout(
         xaxis_title="Time (sec)",
         yaxis_title="Amplitude",
-        height = 500,
+        height = 600,
         margin=dict(l=0,r=0,b=5,t=0),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,font=dict(size= 20)),
         paper_bgcolor='rgb(4, 3, 26)',
-        plot_bgcolor='rgba(255,255,255)'
+        plot_bgcolor='rgba(255,255,255)',
         )
     fig.add_trace(go.Scatter(x=sampled_time,
                                 y=sampled_x,
                                 mode='markers',
                                 name='markers', marker={"color":"black"}))
     fig.update_yaxes(automargin=True)
-    st.write('''###### Original Signal''')
     st.plotly_chart(fig,use_container_width=True)
 
     
