@@ -147,6 +147,30 @@ with left_column:
                 add_button=st.form_submit_button("Add Signal",on_click=add_simulated_signal)
     elif choose_signal=="Uploaded Signal":
         file=st.file_uploader(label="Upload Signal File", key="uploaded_file",type=["csv","wav"])
+        browseButton_style = f"""
+        <style>
+            .css-1plt86z .css-186ux35{{
+            display: none !important;
+        }}
+
+        .css-1plt86z{{
+            cursor: pointer !important;
+            user-select: none;
+        }}
+
+        .css-u8hs99{{
+            flex-direction: column !important;
+            text-align: center;
+            margin-right: AUTO;
+            margin-left: auto;
+        }}
+
+        .css-1m59kx1{{
+            margin-right: 0rem !important;
+        }}
+        </style>
+        """  
+        st.markdown(browseButton_style, unsafe_allow_html=True)
         if file:
             if file.name.split(".")[-1]=="wav":
                 signal, time=read_wav(file)
