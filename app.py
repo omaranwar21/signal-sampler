@@ -1,3 +1,4 @@
+from turtle import color
 import streamlit as st
 from utils import download_signal, read_csv, read_wav, reconstructor, render_svg, sampled_signal_maxf, samplingRate, signal_sum, sampled_signal, add_noise
 import numpy as np
@@ -230,14 +231,13 @@ with middle_column:
 
     if st.session_state.noise_checkbox:
         full_signals=add_noise(full_signals,st.session_state.noise_slider)
-    layout=go.Layout(xaxis={"fixedrange":True},yaxis={"fixedrange":True})
-    fig = go.Figure(layout=layout)
+    fig = go.Figure()
     fig2=go.Figure()
     if signal_flag:
         fig.add_trace(go.Scatter(x=time,
                                 y=full_signals,
                                 mode='lines',
-                                name='lines'))
+                                name='Signal'))
     if sample_flag:
         if st.session_state.sampling_rate_scale=="F(max)Hz":
             sampled_x, sampled_time=sampled_signal_maxf(full_signals,time, st.session_state.sampling_rate, st.session_state.maxf)
@@ -262,18 +262,26 @@ with middle_column:
     fig.update_xaxes(showgrid=True, zerolinecolor='black', gridcolor='lightblue',)
     fig.update_yaxes(showgrid=True, zerolinecolor='black', gridcolor='lightblue')
     fig.update_layout(
-        xaxis_title="Time (sec)",
-        yaxis_title="Amplitude",
-        height = 600,
-        margin=dict(l=0,r=0,b=5,t=0),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1,font=dict(size= 20)),
-        paper_bgcolor='rgb(4, 3, 26)',
-        plot_bgcolor='rgba(255,255,255)',
+            font = dict(size = 20),
+            xaxis_title="Time (sec)",
+            yaxis_title="Amplitude",
+            height = 600,
+            margin=dict(l=0,r=0,b=5,t=0),
+            legend=dict(orientation="v",
+                        yanchor="bottom",
+                        y=0.84,
+                        xanchor="right",
+                        x=0.98,
+                        font=dict(size= 20, color = 'black'),
+                        bgcolor="LightSteelBlue"
+                        ),
+            paper_bgcolor='rgb(4, 3, 26)',
+            plot_bgcolor='rgba(255,255,255)',
         )
     fig.add_trace(go.Scatter(x=sampled_time,
                                 y=sampled_x,
                                 mode='markers',
-                                name='markers', marker={"color":"black"}))
+                                name='Samples', marker={"color":"black", 'size' : 17}))
     fig.update_yaxes(automargin=True)
     st.plotly_chart(fig,use_container_width=True)
 
