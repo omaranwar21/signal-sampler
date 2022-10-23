@@ -5,7 +5,6 @@ import pandas as pd
 import plotly.graph_objects as go
 
 
-st.set_option('deprecation.showPyplotGlobalUse', False)
 
 st.set_page_config(
     page_title="Signal Sampler",
@@ -17,17 +16,14 @@ render_svg("svg.svg")
 with open("style.css") as design:
     st.markdown(f"<style>{design.read()}</style>", unsafe_allow_html=True)
 
-# Initialization of Session State attributes (time,uploaded_signal,maxf)
+# Initialization of Session State attributes (time,uploaded_signal)
 if 'time' not in st.session_state:
     st.session_state.time =np.linspace(0,5,2000)
 if 'uploaded_signal' not in st.session_state:
     st.session_state.uploaded_signal = np.zeros(st.session_state.time.shape)
-if 'maxf' not in st.session_state:
-    st.session_state.maxf = 1
-if 'choose_signal' not in st.session_state:
-    st.session_state.choose_signal = "Uploaded Signal"
 
-#functio to add new signal
+
+#function to add new signal
 def add_simulated_signal():
     if st.session_state.signal_name in st.session_state.simulated_signal.keys():
         left_column.error("duplicated Name")
@@ -38,9 +34,9 @@ def add_simulated_signal():
         "freq_value":st.session_state.freq_value,
         "mag_value":st.session_state.mag_value
     }
-#functio to edit selected signal
-def edit_simulated_signal(s_name,freq,mag):
-    st.session_state.simulated_signal[s_name]={
+#function to edit selected signal
+def edit_simulated_signal(signal_name,freq,mag):
+    st.session_state.simulated_signal[signal_name]={
         "freq_value": freq,
         "mag_value": mag
     }
@@ -77,17 +73,16 @@ with right_column:
         #Editing Expander
         with st.expander("Edit Signal"):
             edit_option_radio_button= st.radio("Edit option",options=("Remove","Edit"),horizontal=True, key="edit_option_radio_button")
-            remove_box= st.selectbox("choose a signal", st.session_state.simulated_signal.keys())
-            frquency=st.session_state.simulated_signal[remove_box]["freq_value"]
-            magnitude=st.session_state.simulated_signal[remove_box]["mag_value"]
+            selected_name= st.selectbox("choose a signal", st.session_state.simulated_signal.keys())
+            frquency=st.session_state.simulated_signal[selected_name]["freq_value"]
+            magnitude=st.session_state.simulated_signal[selected_name]["mag_value"]
 
             if edit_option_radio_button == "Remove":
                 st.write('Frequency = ',frquency,'Hz')
                 st.write('Amplitude = ',magnitude)
                 remove_button=st.button("Remove")
                 if remove_button:
-                    del st.session_state.simulated_signal[remove_box]
-                    st.experimental_rerun()
+                    del st.session_state.simulated_signal[selected_name]
             elif edit_option_radio_button == "Edit":
                 freq = st.number_input('Frequency',value=frquency, step=0.5)
                 amp = st.number_input('Amplitude', value=magnitude,step=0.5 )
@@ -115,7 +110,7 @@ with right_column:
                 st.markdown(styl, unsafe_allow_html=True)
 
                 if Save_button:
-                    edit_simulated_signal(remove_box,freq,amp)
+                    edit_simulated_signal(selected_name,freq,amp)
             
         #Table Expander 
         with st.expander("View Signals Table"):

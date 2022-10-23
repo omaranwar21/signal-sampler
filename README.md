@@ -2,22 +2,56 @@
 
 > Signal sampler is a digital signal processing website to see the effect of changing the sampling rate of any signal, how some points can affect you signal.
 
-## Table of Contents
+## Getting Started
 
-- [General Info](#general-information)
-- [Technologies Used](#technologies-used)
-- [Features](#features)
-- [Screenshots](#screenshots)
-- [Setup](#setup)
-- [Usage](#usage)
-- [Project Status](#project-status)
-- [Room for Improvement](#room-for-improvement)
-- [Acknowledgements](#acknowledgements)
-- [Contact](#contact)
+### Dependencies
 
-## General Information
+- python 3.9
+- streamlit 1.13
+- plotly
 
-- Provide general information about your project here.
-- What problem does it (intend to) solve?
-- What is the purpose of your project?
-- Why did you undertake it?
+### installing
+
+1. first you need to install
+   [Python](https://www.python.org/downloads/).
+2. clone the Repo
+
+```
+git clone https://github.com/youssef-shaban/DSP_Task1_4.git
+```
+
+3. and then run this in terminal
+
+```
+$ pip install -r requirements.txt
+```
+
+### Excuting program
+
+```
+$ streamlit run app.py
+```
+
+## Features
+
+- Open CSV or WAV signal
+
+![Open csv](img/Screenshot 2022-10-23 091419.jpg)
+
+- Mix sin waves toghter to generate a new signal
+
+![Signal Mixer](img/Screenshot 2022-10-23 141305.jpg)
+
+- Sample Signal with any frequncy
+
+![Sampling Signal](img/Screenshot 2022-10-23 141528.jpg)
+
+- Reconstruct Sampled signal to see the affect of sampling
+
+![Signal Reconstruction](img/Screenshot 2022-10-23 141822.jpg)
+
+- Noise to Signal
+
+![Add Noise](img/Screenshot 2022-10-23 142045.jpg)
+
+- with more features like downloading Signal and edit signals in Signal mixer
