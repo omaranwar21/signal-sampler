@@ -36,22 +36,22 @@ $ streamlit run app.py
 
 - Open CSV or WAV signal
 
-![Open csv](img/Screenshot 2022-10-23 091419.jpg)
+![Open csv](img\Screenshot 2022-10-23 091419.jpg)
 
 - Mix sin waves toghter to generate a new signal
 
-![Signal Mixer](img/Screenshot 2022-10-23 141305.jpg)
+![Signal Mixer](img\Screenshot 2022-10-23 141305.jpg)
 
 - Sample Signal with any frequncy
 
-![Sampling Signal](img/Screenshot 2022-10-23 141528.jpg)
+![Sampling Signal](img\Screenshot 2022-10-23 141528.jpg)
 
 - Reconstruct Sampled signal to see the affect of sampling
 
-![Signal Reconstruction](img/Screenshot 2022-10-23 141822.jpg)
+![Signal Reconstruction](img\Screenshot 2022-10-23 141822.jpg)
 
 - Noise to Signal
 
-![Add Noise](img/Screenshot 2022-10-23 142045.jpg)
+![Add Noise](img\Screenshot 2022-10-23 142045.jpg)
 
 - with more features like downloading Signal and edit signals in Signal mixer
