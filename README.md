@@ -36,7 +36,9 @@ $ streamlit run app.py
 
 - Open CSV or WAV signal
 
-![Open csv](img\Screenshot 2022-10-23 091419.jpg)
+![Screenshot 2022-10-23 091419](https://user-images.githubusercontent.com/85808789/197392085-44e394e9-4089-423a-bbc3-c740c7a4acf2.jpg)
+
+
 
 - Mix sin waves toghter to generate a new signal
 
