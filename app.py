@@ -67,7 +67,7 @@ with right_column:
         )
     noise_checkbox=st.checkbox("Add Noise",key="noise_checkbox")
     if noise_checkbox:
-        noise=st.slider("SNR",min_value=0.1,step=0.1,max_value=100.0,value=1.0,key="noise_slider")
+        noise=st.slider("SNR",min_value=1,step=1,max_value=100,value=1,key="noise_slider")
 
     if st.session_state.simulated_signal and st.session_state.choose_signal=="Simulating":
         #Editing Expander
@@ -185,7 +185,7 @@ with left_column:
                     st.session_state.time= time
                 except:
                     st.error("Import a file with X as time and Y as amplitude")
-    selected_graphs= st.selectbox("Select type of graph",("Signal with Samples","Samples Only","Signal Only","Reconstructed Signal"),key="graph_type") 
+    selected_graphs= st.selectbox("Select type of graph",("Signal with Samples","Samples Only","Signal Only","Reconstructed Signal","Display All"),key="graph_type") 
 
 
 #End of left_column
@@ -208,6 +208,10 @@ with middle_column:
         sample_flag=False
         reconstruction_flag=False
     elif(st.session_state.graph_type=="Reconstructed Signal"):
+        signal_flag=False
+        sample_flag=False
+        reconstruction_flag=True
+    elif(st.session_state.graph_type=="Display All"):
         signal_flag=True
         sample_flag=True
         reconstruction_flag=True
@@ -237,10 +241,7 @@ with middle_column:
             sampled_x, sampled_time=sampled_signal_maxf(full_signals,time, st.session_state.sampling_rate, st.session_state.maxf)
         else:
             sampled_x, sampled_time=sampled_signal(full_signals,time, st.session_state.sampling_rate, st.session_state.sampling_rate_scale)
-        fig.add_trace(go.Scatter(x=sampled_time,
-                                y=sampled_x,
-                                mode='markers',
-                                name='markers'))
+        
     if reconstruction_flag:
         if st.session_state.sampling_rate_scale=="F(max)Hz":
             sampled_x, sampled_time=sampled_signal_maxf(full_signals,time, st.session_state.sampling_rate, st.session_state.maxf)
@@ -248,56 +249,34 @@ with middle_column:
             sampled_x, sampled_time=sampled_signal(full_signals,time, st.session_state.sampling_rate, st.session_state.sampling_rate_scale)
         if len(sampled_time) != 1:
             recon_signal=reconstructor(time, sampled_time,sampled_x)
-            fig2.add_trace(go.Scatter(x=time, y=recon_signal,
+            fig.add_trace(go.Scatter(x=time, y=recon_signal,
                     mode='lines',
-                    name='lines'))
+                    name='reconstructed signal', line={"color":"orange"}))
             fig2.update_xaxes(showgrid=False)
             fig2.update_yaxes(showgrid=False)
             
-    if reconstruction_flag:
-        original_signal_height = 316
-        styl2 = f"""
-                <style>
-                    .js-plotly-plot .plotly .modebar {{
-                    position: absolute !important;
-                    top: 288px !important;
-                    right: -8px !important
-                }}
-                </style>
-                """  
-        st.markdown(styl2, unsafe_allow_html=True)
-    else:
-        original_signal_height = 500
+    
 
-    fig.update_xaxes(showgrid=False)
-    fig.update_yaxes(showgrid=False)
+    fig.update_xaxes(showgrid=True, zerolinecolor='black', gridcolor='lightblue')
+    fig.update_yaxes(showgrid=True, zerolinecolor='black', gridcolor='lightblue')
     fig.update_layout(
-        xaxis_title="Time",
+        xaxis_title="Time (sec)",
         yaxis_title="Amplitude",
-        height = original_signal_height,
+        height = 500,
         margin=dict(l=0,r=0,b=5,t=0),
-        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
+        paper_bgcolor='rgb(4, 3, 26)',
+        plot_bgcolor='rgba(255,255,255)'
         )
-
+    fig.add_trace(go.Scatter(x=sampled_time,
+                                y=sampled_x,
+                                mode='markers',
+                                name='markers', marker={"color":"black"}))
     fig.update_yaxes(automargin=True)
     st.write('''###### Original Signal''')
     st.plotly_chart(fig,use_container_width=True)
 
-    if reconstruction_flag:
-        fig2.update_layout(
-            # title="Reconstructed Signal",
-            xaxis_title="Time",
-            yaxis_title="Amplitude",
-            margin=dict(l=0,r=0,b=0,t=3.5),
-            height = original_signal_height
-        )
-        fig2.update_xaxes(showgrid=False)
-        fig2.update_yaxes(
-            showgrid=False,
-            automargin=True
-        )
-        st.write('''###### Reconstructed Signal''')
-        st.plotly_chart(fig2, use_container_width=True)
+    
 #End of middle_column
 
 with right_column:
