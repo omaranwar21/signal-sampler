@@ -130,7 +130,7 @@ with left_column:
     choose_signal= st.radio("Choose Signal",options=("Uploaded Signal","Simulating"),horizontal=True, key="choose_signal")
     if choose_signal=="Simulating":
         #slider to select signal period
-        signal_period= st.slider("Signal Period",min_value=0.1,max_value=10.0,step=0.1,value=1.0,format="%fsec",key="signal_period")
+        signal_period= st.slider("Signal Period",min_value=0.1,max_value=10.0,step=0.1,value=1.0,format="%fsec",key="signal_period");
         #button to add signal
         add_signal=st.button("Add Signal")
         if add_signal:
@@ -248,7 +248,7 @@ with middle_column:
                     name='reconstructed signal', line={"color":"orange"}))
             
     fig.update_xaxes(showgrid=True, zerolinecolor='black', gridcolor='lightblue', range = (-0.1,st.session_state.signal_period))
-    fig.update_yaxes(showgrid=True, zerolinecolor='black', gridcolor='lightblue', range = (-1*(magnitude+0.3),(magnitude+0.3)))
+    fig.update_yaxes(showgrid=True, zerolinecolor='black', gridcolor='lightblue', range = (-1*(max(full_signals)+0.1*max(full_signals)),(max(full_signals)+0.1*max(full_signals))))
     fig.update_layout(
             font = dict(size = 20),
             xaxis_title="Time (sec)",
@@ -268,6 +268,8 @@ with middle_column:
         )
     fig.update_yaxes(automargin=True)
     st.plotly_chart(fig,use_container_width=True)
+
+    
 
     
 #End of middle_column
