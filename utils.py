@@ -1,6 +1,5 @@
 import numpy as np
 from scipy.io import wavfile
-from scipy import signal, fft
 import base64
 import streamlit as st
 import pandas as pd
