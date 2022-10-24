@@ -227,20 +227,13 @@ with middle_column:
                                 mode='lines',
                                 name='Signal'))
     if sample_flag:
-        if st.session_state.sampling_rate_scale=="F(max)Hz":
-            sampled_x, sampled_time=sampled_signal_maxf(full_signals,time, st.session_state.sampling_rate, st.session_state.maxf)
-        else:
-            sampled_x, sampled_time=sampled_signal(full_signals,time, st.session_state.sampling_rate, st.session_state.sampling_rate_scale)
-        
+        sampled_x, sampled_time=sampled_signal(full_signals,time, st.session_state.sampling_rate, st.session_state.sampling_rate_scale)
         fig.add_trace(go.Scatter(x=sampled_time,
                                 y=sampled_x,
                                 mode='markers',
-                                name='Samples', marker={"color":"black", 'size' : 17}))    
+                                name='Samples'))
     if reconstruction_flag:
-        if st.session_state.sampling_rate_scale=="F(max)Hz":
-            sampled_x, sampled_time=sampled_signal_maxf(full_signals,time, st.session_state.sampling_rate, st.session_state.maxf)
-        else:
-            sampled_x, sampled_time=sampled_signal(full_signals,time, st.session_state.sampling_rate, st.session_state.sampling_rate_scale)
+        sampled_x, sampled_time=sampled_signal(full_signals,time, st.session_state.sampling_rate, st.session_state.sampling_rate_scale)
         if len(sampled_time) != 1:
             recon_signal=reconstructor(time, sampled_time,sampled_x)
             fig.add_trace(go.Scatter(x=time, y=recon_signal,

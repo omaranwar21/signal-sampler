@@ -39,14 +39,11 @@ def samplingRate(rate):
         format="%fF(max)Hz"
     return maxV,minV, step, format
 
-def signal_sum(Signals,t):
+def signal_sum(Signals,time):
     keys= Signals.keys()
-    Sum=np.zeros(len(t))
+    Sum=np.zeros(len(time))
     for i in keys:
-        factor=1
-        # if Signals[i]["freq_scale"]=="100KHz":
-        #     factor=1000
-        signal= Signals[i]["mag_value"]*np.sin(2*np.pi*Signals[i]["freq_value"]*t*factor)
+        signal= Signals[i]["mag_value"]*np.sin(2*np.pi*Signals[i]["freq_value"]*time)
         Sum+=signal
     return Sum
 
@@ -70,12 +67,13 @@ def sampled_signal_maxf(signal, time,sample_freq,maxf):
     return sampled_signal, sampled_time
 
 def add_noise(signal, SNR):
-    noise= np.random.randn(len(signal))
-    Es= np.sum(signal**2)
-    En= np.sum(noise**2)
-    alpha= np.sqrt(Es/(SNR*En))
-    d= signal+noise*alpha
-    return d
+    signal_avg_power= np.mean(signal**2)
+    signal_avg_power_db= 10*np.log(signal_avg_power)
+    noise_db= signal_avg_power_db-SNR
+    noise_power= 10**(noise_db/10)
+    noise= np.random.normal(0,np.sqrt(noise_power),len(signal))
+    noisy_signal=signal+noise
+    return noisy_signal
 
 def read_wav(file):
     try:
@@ -96,14 +94,6 @@ def reconstructor(recon_signal_points, sampled_time, sampled_signal):
     recon_signal = np.sum(m, axis = 1)
     return recon_signal
 
-def GetMaximumFrequencyComponent(timeReadings, amplitudeReadings):
-    magnitudes = np.abs(fft.rfft(amplitudeReadings)) / \
-        np.max(np.abs(fft.rfft(amplitudeReadings)))
-    frequencies = fft.rfftfreq(
-        len(timeReadings), (timeReadings[1] - timeReadings[0]))
-    for index, frequency in enumerate(frequencies):
-        if magnitudes[index] >= 0.05:
-            maximumFrequency = frequency
 
 
 def render_svg(svg):
