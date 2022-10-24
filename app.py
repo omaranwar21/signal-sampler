@@ -70,7 +70,7 @@ with right_column:
                 min_value=1,
                 max_value=4*max_frequency,
                 step=1,
-                format="HZ",
+                format= "%dHz",
                 key="sampling_rate"
             )
     elif sampling_rate_scale =="fMax" :
@@ -79,7 +79,7 @@ with right_column:
                 min_value=0,
                 max_value=10*max_frequency,
                 step=max_frequency,
-                format="fMax",
+                format="%dfMax",
                 key="sampling_rate"
             )
         sampling_rate = sampling_rate * max_frequency
@@ -211,8 +211,8 @@ with left_column:
     Signal = st.checkbox('Signal', value= True)  
     Samples = st.checkbox('Samples')  
     Reconstructed = st.checkbox('Reconstructed')  
-    st.write(st.session_state.simulated_signal)
-    st.write(get_fmax())
+    # st.write(st.session_state.simulated_signal)
+    # st.write(get_fmax())
 
 
 #End of left_column
