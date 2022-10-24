@@ -1,0 +1,148 @@
+body {
+  background-color: #f3e8ee;
+  font-size: 22px !important;
+}
+
+.css-v1vwiw {
+  font-size: 20px !important;
+}
+footer,
+header {
+  display: none !important;
+}
+
+.e1fb0mya1.css-fblp2m.ex0cdmw0 {
+  visibility: hidden !important;
+}
+
+.element-container.css-ymhqzq.e1tzin5v3 {
+  margin-top: -10px;
+}
+
+.element-container.css-ymhqzq.e1tzin5v3 {
+  z-index: 1;
+}
+
+.st-au.st-av.st-aw.st-ax.st-e6.st-e7.st-b6.st-e8.st-e9 {
+  height: 20px;
+  border-radius: 5px;
+}
+div.stSlider > div[data-baseweb="slider"] > div > div > div[role="slider"] {
+  min-height: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+  cursor: pointer !important;
+}
+div.stSlider > div[data-baseweb="slider"] > div > div {
+  min-height: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+.css-1dx1gwv {
+  margin-top: -30px;
+}
+
+.css-demzbm.e88czh83 {
+  width: 0;
+}
+
+.css-10y5sf6 {
+  cursor: e-resize;
+  top: -30px;
+}
+
+.css-18e3th9 {
+  padding: 2rem !important;
+}
+
+.css-26ecr1.e16nr0p31 {
+  display: none;
+}
+
+.css-6vw1hb.e1tzin5v2 {
+  display: none;
+}
+
+.js-plotly-plot .plotly .modebar {
+  position: absolute !important;
+  top: 465px !important;
+  right: -8px !important;
+  display: none;
+}
+
+.css-10trblm.e16nr0p30 {
+  text-align: center;
+}
+
+.css-1v0mbdj.etr89bj1 img {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 20%;
+  margin-bottom: -2rem;
+}
+
+.css-18uc3a4 img {
+  justify-content: center;
+  display: flex;
+  margin-top: 0rem;
+  margin-left: auto;
+  margin-right: auto;
+  width: 10rem;
+}
+
+.streamlit-expander button {
+  border-color: red !important;
+  color: red;
+}
+
+.streamlit-expander button:hover {
+  border-color: rgb(255, 255, 255) !important;
+  color: rgb(255, 255, 255);
+  background-color: red;
+}
+
+.streamlit-expander button:focus {
+  box-shadow: rgb(255 0 0 / 50%) 0px 0px 0px 0.2rem;
+  outline: none;
+  color: rgb(255, 255, 255) !important;
+}
+
+.css-70qmjp {
+  top: -25px;
+}
+
+.step-up {
+  color: green !important;
+}
+
+.step-up:hover {
+  background-color: green !important;
+  color: white !important;
+}
+
+.step-up:focus {
+  color: green !important;
+  background-color: rgb(8, 5, 38) !important;
+  box-shadow: 0px 0px 0px 0px !important;
+}
+
+.step-down {
+  color: red !important;
+}
+
+.step-down:hover {
+  background-color: red !important;
+  color: white !important;
+}
+
+.step-down:focus {
+  color: red !important;
+  background-color: rgb(8, 5, 38) !important;
+  box-shadow: 0px 0px 0px 0px !important;
+}
+
+.css-snvk30 {
+  gap: 0 !important;
+}
