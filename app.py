@@ -1,4 +1,4 @@
-from turtle import color
+from turtle import position
 import streamlit as st
 from utils import download_signal, read_csv, read_wav, reconstructor, render_svg, sampled_signal_maxf, samplingRate, signal_sum, sampled_signal, add_noise
 import numpy as np
@@ -150,7 +150,7 @@ with left_column:
     choose_signal= st.radio("Choose Signal",options=("Uploaded Signal","Simulating"),horizontal=True, key="choose_signal")
     if choose_signal=="Simulating":
         #slider to select signal period
-        signal_period= st.slider("Signal Period",min_value=0.1,max_value=10.0,step=0.1,value=1.0,format="%fsec",key="signal_period")
+        signal_period= st.slider("Signal Period",min_value=0.1,max_value=10.0,step=0.1,value=1.0,format="%fsec",key="signal_period");
         #button to add signal
         add_signal=st.button("Add Signal")
         if add_signal:
@@ -243,35 +243,27 @@ with middle_column:
     if st.session_state.noise_checkbox:
         full_signals=add_noise(full_signals,st.session_state.noise_slider)
     fig = go.Figure()
-    fig2=go.Figure()
     if signal_flag:
         fig.add_trace(go.Scatter(x=time,
                                 y=full_signals,
                                 mode='lines',
                                 name='Signal'))
     if sample_flag:
-        if st.session_state.sampling_rate_scale=="F(max)Hz":
-            sampled_x, sampled_time=sampled_signal_maxf(full_signals,time, st.session_state.sampling_rate, st.session_state.maxf)
-        else:
-            sampled_x, sampled_time=sampled_signal(full_signals,time, st.session_state.sampling_rate, st.session_state.sampling_rate_scale)
-        
+        sampled_x, sampled_time=sampled_signal(full_signals,time, st.session_state.sampling_rate, st.session_state.sampling_rate_scale)
         fig.add_trace(go.Scatter(x=sampled_time,
                                 y=sampled_x,
                                 mode='markers',
-                                name='Samples', marker={"color":"black", 'size' : 17}))    
+                                name='Samples'))
     if reconstruction_flag:
-        if st.session_state.sampling_rate_scale=="F(max)Hz":
-            sampled_x, sampled_time=sampled_signal_maxf(full_signals,time, st.session_state.sampling_rate, st.session_state.maxf)
-        else:
-            sampled_x, sampled_time=sampled_signal(full_signals,time, st.session_state.sampling_rate, st.session_state.sampling_rate_scale)
+        sampled_x, sampled_time=sampled_signal(full_signals,time, st.session_state.sampling_rate, st.session_state.sampling_rate_scale)
         if len(sampled_time) != 1:
             recon_signal=reconstructor(time, sampled_time,sampled_x)
             fig.add_trace(go.Scatter(x=time, y=recon_signal,
                     mode='lines',
                     name='reconstructed signal', line={"color":"orange"}))
             
-    fig.update_xaxes(showgrid=True, zerolinecolor='black', gridcolor='lightblue',)
-    fig.update_yaxes(showgrid=True, zerolinecolor='black', gridcolor='lightblue')
+    fig.update_xaxes(showgrid=True, zerolinecolor='black', gridcolor='lightblue', range = (-0.1,st.session_state.signal_period))
+    fig.update_yaxes(showgrid=True, zerolinecolor='black', gridcolor='lightblue', range = (-1*(max(full_signals)+0.1*max(full_signals)),(max(full_signals)+0.1*max(full_signals))))
     fig.update_layout(
             font = dict(size = 20),
             xaxis_title="Time (sec)",
@@ -287,10 +279,12 @@ with middle_column:
                         bgcolor="LightSteelBlue"
                         ),
             paper_bgcolor='rgb(4, 3, 26)',
-            plot_bgcolor='rgba(255,255,255)',
+            plot_bgcolor='rgba(255,255,255)'
         )
     fig.update_yaxes(automargin=True)
     st.plotly_chart(fig,use_container_width=True)
+
+    
 
     
 #End of middle_column
