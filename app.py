@@ -188,7 +188,7 @@ with left_column:
                 except:
                     st.error("Import a file with X as time and Y as amplitude")
     # selected_graphs= st.selectbox("Select type of graph",("Signal with Samples","Samples Only","Signal Only","Reconstructed Signal","Display All"),key="graph_type")
-    Signal = st.checkbox('Signal')  
+    Signal = st.checkbox('Signal', value= True)  
     Samples = st.checkbox('Samples')  
     Reconstructed = st.checkbox('Reconstructed')  
 
@@ -203,25 +203,10 @@ with middle_column:
 
     if(Signal):
         signal_flag=True
-        # sample_flag=True
-        # reconstruction_flag=False
     if(Samples):
         sample_flag=True
-        # signal_flag=False
-        # reconstruction_flag=False
-    # elif(st.session_state.graph_type=="Signal Only"):
-    #     signal_flag=True
-    #     sample_flag=False
-    #     reconstruction_flag=False
     if(Reconstructed):
         reconstruction_flag=True
-        # signal_flag=False
-        # sample_flag=False
-    # elif(st.session_state.graph_type=="Display All"):
-    #     signal_flag=True
-    #     sample_flag=True
-    #     reconstruction_flag=True
-        # st.markdown(f"<a href='#linkto_bottom'>Link to bottom</a>", unsafe_allow_html=True)
 
     time=np.linspace(0,5,2000)
     full_signals=np.zeros(time.shape)
@@ -248,6 +233,10 @@ with middle_column:
         else:
             sampled_x, sampled_time=sampled_signal(full_signals,time, st.session_state.sampling_rate, st.session_state.sampling_rate_scale)
         
+        fig.add_trace(go.Scatter(x=sampled_time,
+                                y=sampled_x,
+                                mode='markers',
+                                name='Samples', marker={"color":"black", 'size' : 17}))    
     if reconstruction_flag:
         if st.session_state.sampling_rate_scale=="F(max)Hz":
             sampled_x, sampled_time=sampled_signal_maxf(full_signals,time, st.session_state.sampling_rate, st.session_state.maxf)
@@ -258,11 +247,7 @@ with middle_column:
             fig.add_trace(go.Scatter(x=time, y=recon_signal,
                     mode='lines',
                     name='reconstructed signal', line={"color":"orange"}))
-            fig2.update_xaxes(showgrid=False)
-            fig2.update_yaxes(showgrid=False)
             
-    
-
     fig.update_xaxes(showgrid=True, zerolinecolor='black', gridcolor='lightblue',)
     fig.update_yaxes(showgrid=True, zerolinecolor='black', gridcolor='lightblue')
     fig.update_layout(
@@ -282,10 +267,6 @@ with middle_column:
             paper_bgcolor='rgb(4, 3, 26)',
             plot_bgcolor='rgba(255,255,255)',
         )
-    fig.add_trace(go.Scatter(x=sampled_time,
-                                y=sampled_x,
-                                mode='markers',
-                                name='Samples', marker={"color":"black", 'size' : 17}))
     fig.update_yaxes(automargin=True)
     st.plotly_chart(fig,use_container_width=True)
 

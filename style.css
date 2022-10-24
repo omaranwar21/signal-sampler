@@ -23,7 +23,7 @@ footer,header{
 }
 
 
-.st-au.st-av.st-aw.st-ax.st-e6.st-e7.st-b6.st-e8.st-e9{
+.st-au.st-av.st-aw.st-ax{
     height: 20px;
     border-radius: 5px;
 }
@@ -36,7 +36,7 @@ footer,header{
 }
 
 .css-1dx1gwv{
-    margin-top: -30px;
+    margin-top: -5px;
 }
 
 .css-demzbm.e88czh83{
@@ -63,9 +63,9 @@ footer,header{
 
 .js-plotly-plot .plotly .modebar {
     position: absolute !important;
-    top: 465px !important;
-    right: -8px !important;
-    display: none;
+    top: 550px !important;
+    right: -6px !important;
+    /* display: none; */
 }
 
 .css-10trblm.e16nr0p30{
