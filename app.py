@@ -41,6 +41,13 @@ def edit_simulated_signal(signal_name,freq,mag):
         "freq_value": freq,
         "mag_value": mag
     }
+#function to get maximum frequency of signals
+def get_fmax() :
+    max_freq=0
+    for signal in st.session_state.simulated_signal.values():
+        if max_freq < signal["freq_value"] :
+            max_freq = signal["freq_value"]
+    return max_freq
 
 # Initialization of Session State attribute (simulated_signal)
 if "simulated_signal" not in st.session_state:
@@ -53,20 +60,33 @@ ce, left_column,  middle_column, right_column, ce = st.columns([0.07, 1,  3.5, 1
 #right_column responsible for : sampling rate slider , adding noise ,editing and removing signals , Downloading Signal
 with right_column:
     st.header(" ")
-    sampling_options=("10Hz","100Hz","1KHz","10KHz","100KHz")
+    max_frequency=get_fmax()
+    sampling_options=("Hz","fMax")
     #sampling_rate_scale variable to store scale of frequency from selectbox
     sampling_rate_scale= st.selectbox("Scale of freq.",sampling_options,key="sampling_rate_scale")
+    if sampling_rate_scale =="Hz" :
+        sampling_rate = st.slider(
+                "sampling rate",
+                min_value=1,
+                max_value=4*max_frequency,
+                step=1,
+                format="HZ",
+                key="sampling_rate"
+            )
+    elif sampling_rate_scale =="fMax" :
+        sampling_rate = st.slider(
+                "sampling rate",
+                min_value=0,
+                max_value=10*max_frequency,
+                step=max_frequency,
+                format="fMax",
+                key="sampling_rate"
+            )
+        sampling_rate = sampling_rate * max_frequency
     #getting maxV, minV,step,format values from samplingRate() function
-    maxV, minV,step, format= samplingRate(sampling_rate_scale)
+    # maxV, minV,step, format= samplingRate(sampling_rate_scale)
     #adding sampling rate slider to get sampling rate from user
-    sampling_rate = st.slider(
-            "sampling rate",
-            min_value=minV,
-            max_value=maxV,
-            step=step,
-            format=format,
-            key="sampling_rate"
-        )
+        
     noise_checkbox=st.checkbox("Add Noise",key="noise_checkbox")
     if noise_checkbox:
         noise=st.slider("SNR",min_value=1,step=1,max_value=100,value=1,key="noise_slider")
@@ -191,6 +211,8 @@ with left_column:
     Signal = st.checkbox('Signal', value= True)  
     Samples = st.checkbox('Samples')  
     Reconstructed = st.checkbox('Reconstructed')  
+    st.write(st.session_state.simulated_signal)
+    st.write(get_fmax())
 
 
 #End of left_column
