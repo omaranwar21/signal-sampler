@@ -47,9 +47,6 @@ def edit_simulated_signal(signal_name,freq,mag):
 if "simulated_signal" not in st.session_state:
     st.session_state.simulated_signal= {"signal_1":{"mag_value":1,"freq_value":1}}
 
-if "choose_signal" not in st.session_state:
-    st.session_state.choose_signal="Simulating"
-
 ce, left_column,  middle_column, right_column, ce = st.columns([0.07, 1,  3.5, 1, 0.07])
 #right_column responsible for : sampling rate slider , adding noise ,editing and removing signals , Downloading Signal
 with right_column:
@@ -72,6 +69,10 @@ with right_column:
     noise_checkbox=st.checkbox("Add Noise",key="noise_checkbox")
     if noise_checkbox:
         noise=st.slider("SNR db",min_value=0,step=1,max_value=50,value=50,key="noise_slider")
+    st.write("Graph")
+    signal_flag = st.checkbox('Signal', value= True)  
+    sample_flag = st.checkbox('Samples',value=True)  
+    reconstruction_flag = st.checkbox('Reconstructed')  
 
     
         
@@ -79,83 +80,76 @@ with right_column:
 
 #left_column responsible for : uploading ot simulating signals , selecting seginal period , add signals ,selecting type of graph 
 with left_column:
-    st.header(" ") 
-    #radio buttons to select to upload or simulate signal
-    choose_signal= st.radio("Choose Signal",options=("Uploaded Signal","Simulating"),horizontal=True, key="choose_signal")
-    if choose_signal=="Simulating":
-        if  st.session_state.choose_signal=="Simulating":
         #Editing Expander
-            edit_option_radio_button= st.radio("Edit option",options=("Add","Remove"),horizontal=True, key="edit_option_radio_button")
-            
+    file=st.file_uploader(label="Upload Signal File", key="uploaded_file",type=["csv","wav"])
+    browseButton_style = f"""
+    <style>
+        .css-1plt86z .css-186ux35{{
+        display: none !important;
+    }}
 
-            if edit_option_radio_button == "Remove":
-                selected_name= st.selectbox("choose a signal", st.session_state.simulated_signal.keys())
-                disable_remove=True
-                if selected_name!=None:
-                    disable_remove=False
-                    frquency=st.session_state.simulated_signal[selected_name]["freq_value"]
-                    magnitude=st.session_state.simulated_signal[selected_name]["mag_value"]
-                    st.write('Frequency = ',frquency,'Hz')
-                    st.write('Amplitude = ',magnitude)
-                remove_button=st.button("Remove",disabled=disable_remove)
-                if remove_button:
-                    if selected_name!=None:
-                        del st.session_state.simulated_signal[selected_name]
-            elif edit_option_radio_button=="Add":
-                signal_name= st.text_input("Enter Signal Name",key="signal_name")
-                signal_freq = st.slider(
-                        "Freqency",
-                        min_value=1,
-                        max_value=100,
-                        step=1,
-                        value=1,
-                        key="freq_value",
-                        format=format
-                    )
-                signal_mag= st.slider("Amplitude",value=1,min_value=1,max_value=100,step=1,key="mag_value")
-                add_button=st.button("Add Signal",on_click=add_simulated_signal)
-    elif choose_signal=="Uploaded Signal":
-        file=st.file_uploader(label="Upload Signal File", key="uploaded_file",type=["csv","wav"])
-        browseButton_style = f"""
-        <style>
-            .css-1plt86z .css-186ux35{{
-            display: none !important;
-        }}
+    .css-1plt86z{{
+        cursor: pointer !important;
+        user-select: none;
+    }}
 
-        .css-1plt86z{{
-            cursor: pointer !important;
-            user-select: none;
-        }}
+    .css-u8hs99{{
+        flex-direction: column !important;
+        text-align: center;
+        margin-right: AUTO;
+        margin-left: auto;
+    }}
 
-        .css-u8hs99{{
-            flex-direction: column !important;
-            text-align: center;
-            margin-right: AUTO;
-            margin-left: auto;
-        }}
-
-        .css-1m59kx1{{
-            margin-right: 0rem !important;
-        }}
-        </style>
-        """  
-        st.markdown(browseButton_style, unsafe_allow_html=True)
-        if file:
-            if file.name.split(".")[-1]=="wav":
-                signal, time=read_wav(file)
+    .css-1m59kx1{{
+        margin-right: 0rem !important;
+    }}
+    </style>
+    """  
+    st.markdown(browseButton_style, unsafe_allow_html=True)
+    if file:
+        if file.name.split(".")[-1]=="wav":
+            signal, time=read_wav(file)
+            st.session_state.uploaded_signal=signal
+            st.session_state.time= time
+        elif file.name.split(".")[-1]=="csv":
+            try:
+                signal, time=read_csv(file)
                 st.session_state.uploaded_signal=signal
                 st.session_state.time= time
-            elif file.name.split(".")[-1]=="csv":
-                try:
-                    signal, time=read_csv(file)
-                    st.session_state.uploaded_signal=signal
-                    st.session_state.time= time
-                except:
-                    st.error("Import a file with X as time and Y as amplitude")
+            except:
+                st.error("Import a file with X as time and Y as amplitude")
+    edit_option_radio_button= st.radio("Edit option",options=("Add","Remove"),horizontal=True, key="edit_option_radio_button")
+    
+
+    if edit_option_radio_button == "Remove":
+        selected_name= st.selectbox("choose a signal", st.session_state.simulated_signal.keys())
+        disable_remove=True
+        if selected_name!=None:
+            disable_remove=False
+            frquency=st.session_state.simulated_signal[selected_name]["freq_value"]
+            magnitude=st.session_state.simulated_signal[selected_name]["mag_value"]
+            st.write('Frequency = ',frquency,'Hz')
+            st.write('Amplitude = ',magnitude)
+        remove_button=st.button("Remove",disabled=disable_remove)
+        if remove_button:
+            if selected_name!=None:
+                del st.session_state.simulated_signal[selected_name]
+    elif edit_option_radio_button=="Add":
+        signal_name= st.text_input("Enter Signal Name",key="signal_name")
+        signal_freq = st.slider(
+                "Freqency",
+                min_value=1,
+                max_value=100,
+                step=1,
+                value=1,
+                key="freq_value",
+                format=format
+            )
+        signal_mag= st.slider("Amplitude",value=1,min_value=1,max_value=100,step=1,key="mag_value")
+        add_button=st.button("Add Signal",on_click=add_simulated_signal)
+        
     # selected_graphs= st.selectbox("Select type of graph",("Signal with Samples","Samples Only","Signal Only","Reconstructed Signal","Display All"),key="graph_type")
-    signal_flag = st.checkbox('Signal', value= True)  
-    sample_flag = st.checkbox('Samples',value=True)  
-    reconstruction_flag = st.checkbox('Reconstructed')  
+    
 
 
 #End of left_column
@@ -165,13 +159,14 @@ with middle_column:
 
     time=np.linspace(0,5,2000)
     full_signals=np.zeros(time.shape)
-    if st.session_state.choose_signal =="Uploaded Signal":
+    if file:
         full_signals, time= st.session_state.uploaded_signal, st.session_state.time
+        full_signals=signal_sum(st.session_state.simulated_signal,time,full_signals)
     
     else:
         time= np.linspace(0, 4, 2000)
     
-        full_signals=signal_sum(st.session_state.simulated_signal,time)
+        full_signals=signal_sum(st.session_state.simulated_signal,time, np.zeros(len(time)))
 
     if st.session_state.noise_checkbox:
         full_signals=add_noise(full_signals,st.session_state.noise_slider)

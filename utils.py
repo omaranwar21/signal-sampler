@@ -38,9 +38,9 @@ def samplingRate(rate):
         format="%fF(max)Hz"
     return maxV,minV, step, format
 
-def signal_sum(Signals,time):
+def signal_sum(Signals,time,uploaded_signal):
     keys= Signals.keys()
-    Sum=np.zeros(len(time))
+    Sum=uploaded_signal
     for i in keys:
         signal= Signals[i]["mag_value"]*np.sin(2*np.pi*Signals[i]["freq_value"]*time)
         Sum+=signal
