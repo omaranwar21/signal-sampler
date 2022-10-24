@@ -1,4 +1,4 @@
-from turtle import color
+from turtle import position
 import streamlit as st
 from utils import download_signal, read_csv, read_wav, reconstructor, render_svg, sampled_signal_maxf, samplingRate, signal_sum, sampled_signal, add_noise
 import numpy as np
@@ -221,7 +221,6 @@ with middle_column:
     if st.session_state.noise_checkbox:
         full_signals=add_noise(full_signals,st.session_state.noise_slider)
     fig = go.Figure()
-    fig2=go.Figure()
     if signal_flag:
         fig.add_trace(go.Scatter(x=time,
                                 y=full_signals,
@@ -248,8 +247,8 @@ with middle_column:
                     mode='lines',
                     name='reconstructed signal', line={"color":"orange"}))
             
-    fig.update_xaxes(showgrid=True, zerolinecolor='black', gridcolor='lightblue',)
-    fig.update_yaxes(showgrid=True, zerolinecolor='black', gridcolor='lightblue')
+    fig.update_xaxes(showgrid=True, zerolinecolor='black', gridcolor='lightblue', range = (-0.1,st.session_state.signal_period))
+    fig.update_yaxes(showgrid=True, zerolinecolor='black', gridcolor='lightblue', range = (-1*(magnitude+0.3),(magnitude+0.3)))
     fig.update_layout(
             font = dict(size = 20),
             xaxis_title="Time (sec)",
@@ -265,7 +264,7 @@ with middle_column:
                         bgcolor="LightSteelBlue"
                         ),
             paper_bgcolor='rgb(4, 3, 26)',
-            plot_bgcolor='rgba(255,255,255)',
+            plot_bgcolor='rgba(255,255,255)'
         )
     fig.update_yaxes(automargin=True)
     st.plotly_chart(fig,use_container_width=True)
