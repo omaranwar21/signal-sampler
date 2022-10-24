@@ -187,7 +187,10 @@ with left_column:
                     st.session_state.time= time
                 except:
                     st.error("Import a file with X as time and Y as amplitude")
-    selected_graphs= st.selectbox("Select type of graph",("Signal with Samples","Samples Only","Signal Only","Reconstructed Signal","Display All"),key="graph_type") 
+    # selected_graphs= st.selectbox("Select type of graph",("Signal with Samples","Samples Only","Signal Only","Reconstructed Signal","Display All"),key="graph_type")
+    Signal = st.checkbox('Signal')  
+    Samples = st.checkbox('Samples')  
+    Reconstructed = st.checkbox('Reconstructed')  
 
 
 #End of left_column
@@ -197,26 +200,27 @@ with middle_column:
     signal_flag=False
     sample_flag=False
     reconstruction_flag=False
-    if(st.session_state.graph_type=="Signal with Samples"):
+
+    if(Signal):
         signal_flag=True
+        # sample_flag=True
+        # reconstruction_flag=False
+    if(Samples):
         sample_flag=True
-        reconstruction_flag=False
-    elif(st.session_state.graph_type=="Samples Only"):
-        sample_flag=True
-        signal_flag=False
-        reconstruction_flag=False
-    elif(st.session_state.graph_type=="Signal Only"):
-        signal_flag=True
-        sample_flag=False
-        reconstruction_flag=False
-    elif(st.session_state.graph_type=="Reconstructed Signal"):
-        signal_flag=False
-        sample_flag=False
+        # signal_flag=False
+        # reconstruction_flag=False
+    # elif(st.session_state.graph_type=="Signal Only"):
+    #     signal_flag=True
+    #     sample_flag=False
+    #     reconstruction_flag=False
+    if(Reconstructed):
         reconstruction_flag=True
-    elif(st.session_state.graph_type=="Display All"):
-        signal_flag=True
-        sample_flag=True
-        reconstruction_flag=True
+        # signal_flag=False
+        # sample_flag=False
+    # elif(st.session_state.graph_type=="Display All"):
+    #     signal_flag=True
+    #     sample_flag=True
+    #     reconstruction_flag=True
         # st.markdown(f"<a href='#linkto_bottom'>Link to bottom</a>", unsafe_allow_html=True)
 
     time=np.linspace(0,5,2000)
@@ -267,12 +271,12 @@ with middle_column:
             yaxis_title="Amplitude",
             height = 600,
             margin=dict(l=0,r=0,b=5,t=0),
-            legend=dict(orientation="v",
+            legend=dict(orientation="h",
                         yanchor="bottom",
-                        y=0.84,
+                        y=0.92,
                         xanchor="right",
-                        x=0.98,
-                        font=dict(size= 20, color = 'black'),
+                        x=0.99,
+                        font=dict(size= 18, color = 'black'),
                         bgcolor="LightSteelBlue"
                         ),
             paper_bgcolor='rgb(4, 3, 26)',
