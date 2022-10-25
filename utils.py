@@ -46,8 +46,10 @@ def signal_sum(Signals,time,uploaded_signal):
         Sum+=signal
     return Sum
 
-def sampled_signal(signal, time,sample_freq,scale):
+def sampled_signal(signal, time,sample_freq,scale,fmax):
     factor=1
+    if scale=="fmax":
+        sample_freq= sample_freq*fmax
     if scale in ["1KHz","10KHz","100KHz"]:
         factor=1000
     sample_rate= int((len(time)/time[-1])/(sample_freq*factor))
@@ -103,14 +105,17 @@ def render_svg(svg):
     st.write(html, unsafe_allow_html=True)
 
 @st.cache
-def download_signal(signal,time):
-    df= pd.DataFrame({"Y":signal,"X":time})
+def download_signal(signal,time,fmax):
+    df= pd.DataFrame({"Y":signal,"X":time,"fmax":fmax})
     return df.to_csv().encode("utf-8")
 def read_csv(file):
     try:
         df= pd.read_csv(file)
         signal= np.array(df['Y'])
         time= np.array(df["X"])
-        return signal,time
+        max_freq= np.array(df["fmax"])
+        max_freq=max_freq[0]
+        return [signal,time,max_freq]
+        # return signal,time
     except:
         return ValueError("Import a file with X as time and Y as amplitude")

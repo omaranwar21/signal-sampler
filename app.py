@@ -22,7 +22,8 @@ if 'time' not in st.session_state:
     st.session_state.time =np.linspace(0,5,2000)
 if 'uploaded_signal' not in st.session_state:
     st.session_state.uploaded_signal = np.sin(2*np.pi*st.session_state.time)
-
+if "uploaded_fmax" not in st.session_state:
+    st.session_state.uploaded_fmax=0
 
 #function to add new signal
 def add_simulated_signal():
@@ -42,6 +43,14 @@ def edit_simulated_signal(signal_name,freq,mag):
         "freq_value": freq,
         "mag_value": mag
     }
+def get_fmax() :
+    max_freq=0
+    for signal in st.session_state.simulated_signal.values():
+        if max_freq < signal["freq_value"] :
+            max_freq = signal["freq_value"]
+    max_freq=max(max_freq,st.session_state.uploaded_fmax)
+    
+    return max_freq
 
 # Initialization of Session State attribute (simulated_signal)
 if "simulated_signal" not in st.session_state:
@@ -51,21 +60,37 @@ ce, left_column,  middle_column, right_column, ce = st.columns([0.07, 1,  3.5, 1
 #right_column responsible for : sampling rate slider , adding noise ,editing and removing signals , Downloading Signal
 with right_column:
     st.header(" ")
-    sampling_options=("10Hz","100Hz","1KHz")
+    sampling_options=("10Hz","100Hz","1KHz","fmax")
+    max_frequency=get_fmax()
     #sampling_rate_scale variable to store scale of frequency from selectbox
     sampling_rate_scale= st.selectbox("Scale of freq.",sampling_options,key="sampling_rate_scale")
+    if sampling_rate_scale=="fmax":
+        
+        sampling_rate = st.slider(
+                "sampling rate",
+                min_value=0.1,
+                max_value=10.0,
+                step=0.1,
+                value=1.0,
+                format="%ffmax",
+                key="sampling_rate"
+            )
+
+
+
     #getting maxV, minV,step,format values from samplingRate() function
-    maxV, minV,step, format= samplingRate(sampling_rate_scale)
-    #adding sampling rate slider to get sampling rate from user
-    sampling_rate = st.slider(
-            "sampling rate",
-            min_value=minV,
-            max_value=maxV,
-            step=step,
-            value=2.0,
-            format=format,
-            key="sampling_rate"
-        )
+    else:
+        maxV, minV,step, format= samplingRate(sampling_rate_scale)
+        #adding sampling rate slider to get sampling rate from user
+        sampling_rate = st.slider(
+                "sampling rate",
+                min_value=minV,
+                max_value=maxV,
+                step=step,
+                value=2.0,
+                format=format,
+                key="sampling_rate"
+            )
     noise_checkbox=st.checkbox("Add Noise",key="noise_checkbox")
     if noise_checkbox:
         noise=st.slider("SNR db",min_value=0,step=1,max_value=50,value=50,key="noise_slider")
@@ -113,9 +138,10 @@ with left_column:
             st.session_state.time= time
         elif file.name.split(".")[-1]=="csv":
             try:
-                signal, time=read_csv(file)
+                signal, time, fmax=read_csv(file)
                 st.session_state.uploaded_signal=signal
                 st.session_state.time= time
+                st.session_state.uploaded_fmax= fmax
             except:
                 st.error("Import a file with X as time and Y as amplitude")
     edit_option_radio_button= st.radio("Edit option",options=("Add","Remove"),horizontal=True, key="edit_option_radio_button")
@@ -143,7 +169,7 @@ with left_column:
                 step=1,
                 value=1,
                 key="freq_value",
-                format=format
+                format="%dHz"
             )
         signal_mag= st.slider("Amplitude",value=1,min_value=1,max_value=100,step=1,key="mag_value")
         add_button=st.button("Add Signal",on_click=add_simulated_signal)
@@ -178,14 +204,14 @@ with middle_column:
                                 name='Signal'))
     
     if reconstruction_flag:
-        sampled_x, sampled_time=sampled_signal(full_signals,time, st.session_state.sampling_rate, st.session_state.sampling_rate_scale)
+        sampled_x, sampled_time=sampled_signal(full_signals,time, st.session_state.sampling_rate, st.session_state.sampling_rate_scale,max_frequency)
         if len(sampled_time) != 1:
             recon_signal=reconstructor(time, sampled_time,sampled_x)
             fig.add_trace(go.Scatter(x=time, y=recon_signal,
                     mode='lines',
                     name='reconstruct', line={"color":"orange"}))
     if sample_flag:
-        sampled_x, sampled_time=sampled_signal(full_signals,time, st.session_state.sampling_rate, st.session_state.sampling_rate_scale)
+        sampled_x, sampled_time=sampled_signal(full_signals,time, st.session_state.sampling_rate, st.session_state.sampling_rate_scale,max_frequency)
         fig.add_trace(go.Scatter(x=sampled_time,
                                 y=sampled_x,
                                 mode='markers',
@@ -219,4 +245,4 @@ with middle_column:
 #End of middle_column
 
 with right_column:
-    st.download_button(label="Download data as CSV", data=download_signal(full_signals,time),file_name="signal_data.csv",mime='text/csv')
+    st.download_button(label="Download data as CSV", data=download_signal(full_signals,time,max_frequency),file_name="signal_data.csv",mime='text/csv')
