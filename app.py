@@ -63,11 +63,11 @@ with right_column:
     sampling_options=("10Hz","100Hz","1KHz","fmax")
     max_frequency=get_fmax()
     #sampling_rate_scale variable to store scale of frequency from selectbox
-    sampling_rate_scale= st.selectbox("Scale of freq.",sampling_options,key="sampling_rate_scale")
+    sampling_rate_scale= st.selectbox("Frequency Scale",sampling_options,key="sampling_rate_scale")
     if sampling_rate_scale=="fmax":
         
         sampling_rate = st.slider(
-                "sampling rate",
+                "Sampling Rate",
                 min_value=0.1,
                 max_value=10.0,
                 step=0.1,
@@ -83,7 +83,7 @@ with right_column:
         maxV, minV,step, format= samplingRate(sampling_rate_scale)
         #adding sampling rate slider to get sampling rate from user
         sampling_rate = st.slider(
-                "sampling rate",
+                "Sampling Rate",
                 min_value=minV,
                 max_value=maxV,
                 step=step,
@@ -93,7 +93,7 @@ with right_column:
             )
     noise_checkbox=st.checkbox("Add Noise",key="noise_checkbox")
     if noise_checkbox:
-        noise=st.slider("SNR db",min_value=0,step=1,max_value=50,value=50,key="noise_slider")
+        noise=st.slider("SNR (db)",min_value=0,step=1,max_value=50,value=50,key="noise_slider")
     st.write("Graph")
     signal_flag = st.checkbox('Signal', value= True)  
     sample_flag = st.checkbox('Samples',value=True)  
@@ -161,7 +161,7 @@ with left_column:
             if selected_name!=None:
                 del st.session_state.simulated_signal[selected_name]
     elif edit_option_radio_button=="Add":
-        signal_name= st.text_input("Enter Signal Name",key="signal_name")
+        signal_name= st.text_input("Name",key="signal_name")
         signal_freq = st.slider(
                 "Freqency",
                 min_value=1,
@@ -209,7 +209,7 @@ with middle_column:
             recon_signal=reconstructor(time, sampled_time,sampled_x)
             fig.add_trace(go.Scatter(x=time, y=recon_signal,
                     mode='lines',
-                    name='reconstruct', line={"color":"orange"}))
+                    name='Reconstruct', line={"color":"orange"}))
     if sample_flag:
         sampled_x, sampled_time=sampled_signal(full_signals,time, st.session_state.sampling_rate, st.session_state.sampling_rate_scale,max_frequency)
         fig.add_trace(go.Scatter(x=sampled_time,
