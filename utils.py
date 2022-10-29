@@ -40,7 +40,7 @@ def samplingRate(rate):
 
 def signal_sum(Signals,time,uploaded_signal):
     keys= Signals.keys()
-    Sum=uploaded_signal
+    Sum=uploaded_signal.copy().astype(float)
     for i in keys:
         signal= Signals[i]["mag_value"]*np.sin(2*np.pi*Signals[i]["freq_value"]*time)
         Sum+=signal

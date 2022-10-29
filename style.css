@@ -11,10 +11,6 @@ header {
   display: none !important;
 }
 
-.e1fb0mya1.css-fblp2m.ex0cdmw0 {
-  visibility: hidden !important;
-}
-
 .element-container.css-ymhqzq.e1tzin5v3 {
   margin-top: -10px;
 }
@@ -39,6 +35,10 @@ div.stSlider > div[data-baseweb="slider"] > div > div {
   margin-bottom: 20px;
 }
 
+.uploadedFile button {
+  position: absolute;
+  transform: translateY(-50%);
+}
 .css-1dx1gwv {
   margin-top: -30px;
 }
@@ -66,9 +66,8 @@ div.stSlider > div[data-baseweb="slider"] > div > div {
 
 .js-plotly-plot .plotly .modebar {
   position: absolute !important;
-  top: 465px !important;
+  top: 570px !important;
   right: -8px !important;
-  display: none;
 }
 
 .css-10trblm.e16nr0p30 {

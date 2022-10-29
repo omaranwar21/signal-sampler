@@ -24,11 +24,12 @@ if 'uploaded_signal' not in st.session_state:
     st.session_state.uploaded_signal = np.sin(2*np.pi*st.session_state.time)
 if "uploaded_fmax" not in st.session_state:
     st.session_state.uploaded_fmax=0
-
+if "num_signals" not in st.session_state:
+    st.session_state.num_signals=1
 #function to add new signal
 def add_simulated_signal():
     if st.session_state.signal_name =="":
-        st.session_state.signal_name="Signal_"+str(len(st.session_state.simulated_signal)+1)
+        st.session_state.signal_name="Signal_"+str(st.session_state.num_signals+1)
     if st.session_state.signal_name in st.session_state.simulated_signal.keys():
         left_column.error("duplicated Name")
         return 
@@ -37,6 +38,7 @@ def add_simulated_signal():
         "mag_value":st.session_state.mag_value
     }
     st.session_state.signal_name=""
+    st.session_state.num_signals+=1
 #function to edit selected signal
 def edit_simulated_signal(signal_name,freq,mag):
     st.session_state.simulated_signal[signal_name]={
@@ -59,7 +61,7 @@ if "simulated_signal" not in st.session_state:
 ce, left_column,  middle_column, right_column, ce = st.columns([0.07, 1,  3.5, 1, 0.07])
 #right_column responsible for : sampling rate slider , adding noise ,editing and removing signals , Downloading Signal
 with right_column:
-    st.header(" ")
+    st.subheader("")
     sampling_options=("10Hz","100Hz","1KHz","fmax")
     max_frequency=get_fmax()
     #sampling_rate_scale variable to store scale of frequency from selectbox
@@ -94,7 +96,7 @@ with right_column:
     noise_checkbox=st.checkbox("Add Noise",key="noise_checkbox")
     if noise_checkbox:
         noise=st.slider("SNR (db)",min_value=0,step=1,max_value=50,value=50,key="noise_slider")
-    st.write("Graph")
+    st.write("Figures")
     signal_flag = st.checkbox('Signal', value= True)  
     sample_flag = st.checkbox('Samples',value=True)  
     reconstruction_flag = st.checkbox('Reconstructed')  
@@ -144,11 +146,11 @@ with left_column:
                 st.session_state.uploaded_fmax= fmax
             except:
                 st.error("Import a file with X as time and Y as amplitude")
-    edit_option_radio_button= st.radio("Edit option",options=("Add","Remove"),horizontal=True, key="edit_option_radio_button")
+    edit_option_radio_button= st.radio("Options",options=("Add","Remove"),horizontal=True, key="edit_option_radio_button")
     
 
     if edit_option_radio_button == "Remove":
-        selected_name= st.selectbox("choose a signal", st.session_state.simulated_signal.keys())
+        selected_name= st.selectbox("Signal(s)", st.session_state.simulated_signal.keys())
         disable_remove=True
         if selected_name!=None:
             disable_remove=False
@@ -182,7 +184,7 @@ with left_column:
 
 #middle_column responsible for viewing signals graphs(Original and Reconstructed)
 with middle_column:
-
+    st.subheader("")
     time=np.linspace(0,5,2000)
     full_signals=np.zeros(time.shape)
     if file:
@@ -202,16 +204,16 @@ with middle_column:
                                 y=full_signals,
                                 mode='lines',
                                 name='Signal'))
-    
+                            
+    sampled_x, sampled_time=sampled_signal(full_signals,time, st.session_state.sampling_rate, st.session_state.sampling_rate_scale,max_frequency)
+    recon_signal=reconstructor(time, sampled_time,sampled_x)
     if reconstruction_flag:
-        sampled_x, sampled_time=sampled_signal(full_signals,time, st.session_state.sampling_rate, st.session_state.sampling_rate_scale,max_frequency)
         if len(sampled_time) != 1:
-            recon_signal=reconstructor(time, sampled_time,sampled_x)
+            
             fig.add_trace(go.Scatter(x=time, y=recon_signal,
                     mode='lines',
                     name='Reconstruct', line={"color":"orange"}))
     if sample_flag:
-        sampled_x, sampled_time=sampled_signal(full_signals,time, st.session_state.sampling_rate, st.session_state.sampling_rate_scale,max_frequency)
         fig.add_trace(go.Scatter(x=sampled_time,
                                 y=sampled_x,
                                 mode='markers',
@@ -245,4 +247,6 @@ with middle_column:
 #End of middle_column
 
 with right_column:
-    st.download_button(label="Download data as CSV", data=download_signal(full_signals,time,max_frequency),file_name="signal_data.csv",mime='text/csv')
+    st.download_button(label="Download original signal", data=download_signal(full_signals,time,max_frequency),file_name="signal_data.csv",mime='text/csv')
+    max_freq_recon= min(max_frequency,int(sampling_rate/2))
+    st.download_button(label="Download reconstucted signal", data=download_signal(recon_signal,time,max_frequency),file_name="signal_data.csv",mime='text/csv')
