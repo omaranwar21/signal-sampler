@@ -49,28 +49,28 @@ $ streamlit run src\app.py
 ```
 
 ## Features
+- Default signal
+
+![1](https://user-images.githubusercontent.com/84602951/199126944-3262d37e-c070-4fa7-8ca9-2525614d8092.png)
 
 - Open CSV or WAV signal
 
-![Screenshot 2022-10-23 091419](https://user-images.githubusercontent.com/85808789/197392085-44e394e9-4089-423a-bbc3-c740c7a4acf2.jpg)
-
-
+![2](https://user-images.githubusercontent.com/84602951/199126508-7c50cf59-cb9f-444b-8f1c-c32c621d1fe3.png)
 
 - Mix sin waves toghter to generate a new signal
 
-![Screenshot 2022-10-23 141305](https://user-images.githubusercontent.com/85808789/197392126-11958d78-2054-4976-9c01-9f2aa3c4ce6c.jpg)
+![3](https://user-images.githubusercontent.com/84602951/199126537-a8f83524-c8de-4d4e-b64a-cc7bdd790f6b.png)
 
+- Sample and Reconstruct Signal with any frequncy (Hz)
 
-- Sample Signal with any frequncy
+![4](https://user-images.githubusercontent.com/84602951/199126677-ee7bc252-cb31-4046-9605-e4af2ed97f6b.png)
 
-![Screenshot 2022-10-23 141528](https://user-images.githubusercontent.com/85808789/197392132-97d319fa-c9fe-4fe1-9956-450b223e80dc.jpg)
+- Sample and Reconstruct Signal with fmax
 
-- Reconstruct Sampled signal to see the affect of sampling
-
-![Screenshot 2022-10-23 141822](https://user-images.githubusercontent.com/85808789/197392138-157d11ab-11c9-4ec8-a643-1f18a04a2920.jpg)
+![5](https://user-images.githubusercontent.com/84602951/199126806-5084391b-b2e4-49a8-9225-b6faf739dcbd.png)
 
 - Noise to Signal
 
-![Screenshot 2022-10-23 142045](https://user-images.githubusercontent.com/85808789/197392149-0c5fe1fc-d977-44f2-9d34-c8e62ac36921.jpg)
+![6](https://user-images.githubusercontent.com/84602951/199126838-7808a470-bc28-4a7c-8542-3ad8498cfcb2.png)
 
 - with more features like downloading Signal and edit signals in Signal mixer
