@@ -45,7 +45,7 @@ $ pip install -r requirements.txt
 ### Excuting program
 
 ```
-$ streamlit run app.py
+$ streamlit run src\app.py
 ```
 
 ## Features
