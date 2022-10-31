@@ -9,12 +9,13 @@
 - Digital signal processing Course
 - First Semster
 - Date : 31/10/2022
+
 |Team Names|Section|BN| 
 |----------|-------|---|
-|Abdelrahman Yaser|1|52| 
-|Omar Anwar   |2   | x  |  
+|Abdelrahman Yaser|1|52|
+|Omar Anwar   |2   | x |
 |Omar Saad   |2 |3|   
-|Youssef Shaban|2|  x|   
+|Youssef Shaaban|2|57|   
 
 
 ## Getting Started
