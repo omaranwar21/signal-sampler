@@ -13,7 +13,7 @@
 |Team Names|Section|BN| 
 |----------|-------|---|
 |Abdelrahman Yaser|1|52|
-|Omar Anwar   |2   | x |
+|Omar Anwar   |2   | 2 |
 |Omar Saad   |2 |3|   
 |Youssef Shaaban|2|57|   
 
