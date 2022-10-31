@@ -1,6 +1,6 @@
 # Signal Sampler
 
-> Signal sampler is a digital signal processing website to see the effect of changing the sampling rate of any signal, how some points can affect you signal.
+> Signal sampler is a digital signal processing website to see the effect of changing the sampling rate of any signal, how some points can affect your signal.
 
 
 ## [Source Code](https://github.com/youssef-shaban/DSP_Task1_4/tree/main/src)
