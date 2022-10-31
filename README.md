@@ -5,6 +5,18 @@
 
 ## [Source Code](https://github.com/youssef-shaban/DSP_Task1_4/tree/main/src)
 
+## Task info
+- Digital signal processing Course
+- First Semster
+- Date : 31/10/2022
+|Team Names|Section|BN| 
+|----------|-------|---|
+|Abdelrahman Yaser|1|52| 
+|Omar Anwar   |2   | x  |  
+|Omar Saad   |2 |3|   
+|Youssef Shaban|2|  x|   
+
+
 ## Getting Started
 
 ### Dependencies
